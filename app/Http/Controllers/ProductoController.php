@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use App\Models\Categoria;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
 
 class ProductoController extends Controller
 {
@@ -27,6 +29,7 @@ class ProductoController extends Controller
         'codigo'      => 'required|unique:productos',
         'barra'       => 'nullable|unique:productos', // Corregido: minúsculas y un solo ":"
         'nombre'      => 'required',
+        'stock_actual' => 'required|integer|min:0',
         'categoriaid' => 'required|exists:categorias,id',
     ]);
 
@@ -34,10 +37,40 @@ class ProductoController extends Controller
         $producto->codigo=$request->input('codigo');
         $producto->barra=$request->input('barra');
         $producto->nombre=$request->input('nombre');
+        $producto->stock_actual=$request->input('stock_actual');
         $producto->categorias_id=$request->input('categoriaid');
         $producto->save();
 
 
-        return redirect()->route('producto.index')->with('success', 'Producto creado exitosamente.');
+        return redirect()->route('producto')->with('success', 'Producto creado exitosamente.');
+    }
+
+    /**
+     * Handle bulk import of products (and their categories) from a spreadsheet.
+     *
+     * The uploaded file may be XLSX, CSV or ODS and must include a header row
+     * with at least the columns `codigo`, `nombre` and `categoria`. Additional
+     * fields such as `barra` or `stock_actual` are optional.  A category that
+     * does not yet exist will be created automatically. Existing products are
+     * updated by matching on the `codigo` column.
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,csv,ods',
+        ]);
+
+        // intentamos importar y manejar cualquier error que ocurra durante el proceso
+        try {
+            Excel::import(new ProductsImport, $request->file('file'));
+        } catch (\Throwable $e) {
+            return redirect()
+                        ->route('productos')
+                        ->with('error', 'Error en la importación: ' . $e->getMessage());
+        }
+
+        return redirect()
+                    ->route('productos')
+                    ->with('success', 'Importación completada con éxito.');
     }
 }

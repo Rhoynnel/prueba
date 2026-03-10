@@ -24,6 +24,10 @@ class CategoriaController extends Controller
         $categoria->name = $request->input('name');
         $categoria->save();
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($categoria);
+        }
+
         return redirect()->route('producto.crear')->with('success', 'Categoria creada exitosamente.');
     }
 }

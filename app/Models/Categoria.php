@@ -9,4 +9,7 @@ class Categoria extends Model
 {
     use HasFactory;
     protected $table = 'categorias';
+
+    // para poder crear rápidamente desde la importación
+    protected $fillable = ['name'];
 }

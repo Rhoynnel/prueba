@@ -11,6 +11,16 @@ class Producto extends Model
     use HasFactory;
     protected $table = 'productos';
 
+    // habilitamos asignación masiva para los campos que utilizamos en la importación
+    protected $fillable = [
+        'codigo',
+        'barra',
+        'nombre',
+        'stock_actual',
+        'categorias_id',
+        // se pueden agregar precios u otros campos si la hoja los contiene
+    ];
+
 
     public function categoria()
     {

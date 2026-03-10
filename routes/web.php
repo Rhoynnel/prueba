@@ -55,6 +55,11 @@ route::get('/cliente.buscar', [ClienteController::class, 'buscar'])->middleware(
 Route::get('/tasas', [TasaController::class, 'index'])->middleware(['auth', 'verified'])->name('tasas');
 Route::get('/tasa.crear', [TasaController::class, 'create'])->middleware(['auth', 'verified'])->name('tasa.crear');
 Route::post('/tasas', [TasaController::class, 'store'])->middleware(['auth', 'verified'])->name('tasa.store');
+
+// import products and categories from Excel/CSV
+Route::post('/productos/import', [\App\Http\Controllers\ProductoController::class, 'import'])
+    ->middleware(['auth','verified'])
+    ->name('producto.import');
 Route::delete('/tasas/{id}', [TasaController::class, 'destroy'])->middleware(['auth', 'verified'])->name('tasa.destroy');
 
 route::get('/proveedores', [ProveedorController::class, 'proveedores'])->middleware(['auth', 'verified'])->name('proveedores');
