@@ -1,0 +1,50 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Tasas') }}
+        </h2>
+
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <!--para dividir en columnas-->
+                <div class="flex divide-x-4 divide-double divide-sky-400">
+                    <div class="p-4 text-gray-900 dark:text-gray-100">
+                        <h2 class="text-base/7 font-semibold text-white">Datos de Tasa</h2>
+                        <p class="mt-1 text-sm/6 text-gray-400">Aqui se cargaran las Tasas</p>
+                    </div>
+
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+
+
+                        <div class="border-b border-white/10 pb-12">
+
+
+                            <form action="{{route('tasas')}}" method="POST">
+                                @csrf
+                                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+                                    <div class="sm:col-span-4">
+                                        <label for="Descripcion"
+                                            class="block text-sm/6 font-medium text-black">Descripcion</label>
+                                        <div class="mt-2">
+                                            <input id="tasa" type="number" name="tasa" step="0.01" 
+                                                class="uppercase block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-white dark:ring-gray-600" 
+                                                placeholder="Escribe la tasa..." />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <x-primary-button>{{ __('Agrega Tasa') }}</x-primary-button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</x-app-layout>
