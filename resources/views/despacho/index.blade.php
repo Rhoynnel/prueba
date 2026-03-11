@@ -63,37 +63,38 @@
             
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class=" border-separate border border-gray-400 w-full text-sm text-gray-500 dark:text-gray-400">
-                        <thead>
-                            
+                    <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
+                        
+                        <thead class="bg-gray-100 dark:bg-gray-700">
+                             
                              <tr>
-                                <th class="border border-gray-300">Cedula</th>
-                                <th class="border border-gray-300">Nombre</th>
-                                <th class="border border-gray-300">Direccion</th>
-                                <th class="border border-gray-300">Telefono</th>
-                                <th class="border border-gray-300">Tasa</th>
-                                <th class="border border-gray-300">Nro de Despacho</th>
-                                <th class="border border-gray-300">Estatus</th>
-                                <th class="border border-gray-300">Acciones</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Cedula</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Nombre</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Direccion</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Telefono</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Tasa</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Nro de Despacho</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Estatus</th>
+                                <th class="px-4 py-2 border border-gray-300 text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($despachos as $item)
-                                <tr>
-                                    <td>{{ $item->cliente->cedula }}</td>
-                                    <td>{{ $item->cliente->nombreCompleto }}</td>
-                                    <td>{{ $item->cliente->direccion }}</td>
-                                    <td>{{ $item->cliente->telefono }}</td>
-                                    <td>{{ $item->tasa ? $item->tasa->tasa : 'N/A' }}</td>
-                                    <td>{{ $item->numeroDespacho() }}</td>
-                                    <td>
+                                <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
+                                    <td class="px-4 py-2 border">{{ $item->cliente->cedula }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->cliente->nombreCompleto }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->cliente->direccion }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->cliente->telefono }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->tasa ? $item->tasa->tasa : 'N/A' }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->numeroDespacho() }}</td>
+                                    <td class="px-4 py-2 border">
                                         @if ($item->status == 1)
                                             Cargada
                                         @else
                                             Sin Cargar
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="px-4 py-2 border text-center">
                                         <a href="{{ route('despacho.cargar', $item->id) }}" class="text-blue-500 hover:underline">Cargar</a>
                                         <!-- Aquí puedes agregar más acciones como Editar o Eliminar -->
                                     </td>

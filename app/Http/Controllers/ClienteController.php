@@ -12,8 +12,9 @@ use App\Models\Producto;
 class ClienteController extends Controller
 {
     public function clientes(){
-        $clientes = Cliente::all();
-        return view('clientes',compact('clientes'));
+        // paginate on query builder instead of after retrieving all records
+        $clientes = Cliente::paginate(5);
+        return view('cliente.index',compact('clientes'));
     }
     public function create(){
         return view('cliente.create');

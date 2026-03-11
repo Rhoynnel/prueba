@@ -27,22 +27,23 @@
             <br>
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class=" border-separate border border-gray-400 w-full text-sm text-gray-500 dark:text-gray-400">
-                        <thead>
+                    <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
+                        
+                        <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
-                                <th class="border border-gray-300">Codigo</th>
-                                <th class="border border-gray-300">Nombre</th>
-                                <th class="border border-gray-300">Categoria</th>
-                                <th class="border border-gray-300">Stock</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Codigo</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Nombre</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Categoria</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Stock</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($productos as $item)
-                                <tr>
-                                    <td>{{ $item->codigo }}</td>
-                                    <td>{{ $item->nombre }}</td>
-                                    <td>{{ $item->categoria->name }}</td>
-                                    <td>{{ $item->stock_actual }}</td>
+                                <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
+                                    <td class="px-4 py-2 border">{{ $item->codigo }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->nombre }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->categoria->name }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->stock_actual }}</td>
                                 </tr>
                             @endforeach
 

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Clientes') }}
+            {{ __('Proveedores') }}
         </h2>
     </x-slot>
 
@@ -12,17 +12,17 @@
                     <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Cedula</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">RIF / Cédula</th>
                                 <th class="px-4 py-2 border border-gray-300 text-left">Nombre</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Telefono</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Direccion</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Teléfono</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Dirección</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($clientes as $item)
+                            @foreach ($proveedores ?? [] as $item)
                                 <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
-                                    <td class="px-4 py-2 border">{{ $item->cedula }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->nombreCompleto }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->rif }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->nombre }}</td>
                                     <td class="px-4 py-2 border">{{ $item->telefono }}</td>
                                     <td class="px-4 py-2 border">{{ $item->direccion }}</td>
                                 </tr>
@@ -30,9 +30,8 @@
                         </tbody>
                     </table>
 
-                    {{-- Pagination if needed --}}
-                    @if(method_exists($clientes, 'links'))
-                        {{ $clientes->links() }}
+                    @if(isset($proveedores) && method_exists($proveedores, 'links'))
+                        {{ $proveedores->links() }}
                     @endif
                 </div>
             </div>

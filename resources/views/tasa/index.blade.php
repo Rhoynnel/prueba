@@ -12,20 +12,21 @@
             <br>
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class="mx-auto max-w-3xl border-separate border border-gray-400 text-sm text-gray-500 dark:text-gray-400">
-                        <thead>
+                    <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
+                        
+                        <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
-                                <th class="border border-gray-300">Fecha</th>
-                                <th class="border border-gray-300">Tasa</th>
-                                <th class="border border-gray-300">Acciones</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Fecha</th>
+                                <th class="px-4 py-2 border border-gray-300 text-left">Tasa</th>
+                                <th class="px-4 py-2 border border-gray-300 text-center">Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
                             @foreach ($tasas as $item)
-                                <tr>
-                                    <td>{{ $item->fecha }}</td>
-                                    <td>{{ $item->tasa }}</td>
-                                    <td>
+                                <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
+                                    <td class="px-4 py-2 border">{{ $item->fecha }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->tasa }}</td>
+                                    <td class="px-4 py-2 border text-center">
                                         <form action="{{ route('tasa.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar esta tasa?')">
                                             @csrf
                                             @method('DELETE')

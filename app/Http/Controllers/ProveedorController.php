@@ -13,7 +13,10 @@ class ProveedorController extends Controller
 {
     public function proveedores()
     {
-        return view('proveedor.index');
+        // paginate directly on the query builder; calling all() returns a collection,
+        // which does not have a paginate method and triggered the error.
+        $proveedores = Proveedor::paginate(5);
+        return view('proveedor.index', compact('proveedores'));
     }
 
     public function buscar(Request $request)

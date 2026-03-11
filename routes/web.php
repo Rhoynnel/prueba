@@ -67,6 +67,25 @@ route::post('/proveedores', [ProveedorController::class, 'store'])->middleware([
 route::get('/proveedor.crear', [ProveedorController::class, 'create'])->middleware(['auth', 'verified'])->name('proveedor.crear');
 route::get('/proveedor.buscar', [ProveedorController::class, 'buscar'])->middleware(['auth', 'verified'])->name('proveedor.buscar');
 
+// user management CRUD
+Route::get('/usuarios', [\App\Http\Controllers\UserController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('usuarios');
+Route::get('/usuario.crear', [\App\Http\Controllers\UserController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('usuario.crear');
+Route::post('/usuarios', [\App\Http\Controllers\UserController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('usuario.store');
+Route::get('/usuario/{user}/editar', [\App\Http\Controllers\UserController::class, 'edit'])
+    ->middleware(['auth', 'verified'])
+    ->name('usuario.edit');
+Route::put('/usuario/{user}', [\App\Http\Controllers\UserController::class, 'update'])
+    ->middleware(['auth', 'verified'])
+    ->name('usuario.update');
+Route::delete('/usuario/{user}', [\App\Http\Controllers\UserController::class, 'destroy'])
+    ->middleware(['auth', 'verified'])
+    ->name('usuario.destroy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
