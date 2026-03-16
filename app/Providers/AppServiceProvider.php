@@ -26,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Compra::observe(CompraObserver::class);
         Despacho::observe(DespachoObserver::class);
-       // Paginator::useBootstrapFive(); // Agrega esta línea para usar el estilo de Bootstrap en la paginación
+        Paginator::useBootstrapFive(); // Agrega esta línea para usar el estilo de Bootstrap en la paginación
     }
 }
