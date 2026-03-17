@@ -1,60 +1,77 @@
 <x-app-layout>
+    
+    <div class="container">
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2>
             {{ __('Usuarios') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div>
+        <div>
             @if(session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                <div>
                     {{ session('success') }}
                 </div>
             @endif
             @if(session('error'))
-                <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
+                <div>
                     {{ session('error') }}
                 </div>
             @endif
 
             <div class="flex justify-end mb-2">
-                <a href="{{ route('usuario.crear') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{{ __('Agregar Usuario') }}</a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModalPersonalizado">
+  +
+</button>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Nombre</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Correo</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Creado</th>
-                                <th class="px-4 py-2 border border-gray-300 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($users as $user)
-                                <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
-                                    <td class="px-4 py-2 border">{{ $user->name }}</td>
-                                    <td class="px-4 py-2 border">{{ $user->email }}</td>
-                                    <td class="px-4 py-2 border">{{ $user->created_at->format('Y-m-d') }}</td>
-                                    <td class="px-4 py-2 border text-center">
-                                        <a href="{{ route('usuario.edit', $user) }}" class="text-indigo-600 hover:underline mr-2">Editar</a>
-                                        <form action="{{ route('usuario.destroy', $user) }}" method="POST" class="inline" onsubmit="return confirm('¿Eliminar usuario?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:underline">Eliminar</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Creado</th>
+                        <th>Accion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach ($users as $user)
+                        <tr>
+                          <td>{{ $user->name }}</td>
+                          <td>{{ $user->email }}</td>
+                          <td>{{ $user->created_at->format('Y-m-d') }}</td>
+                          <td>
+                            <a href="{{ route('usuario.edit', $user) }}" class="btn btn-primary">Editar</a>
+                            <a href="{{ route('usuario.destroy', $user) }}" class="btn btn-danger">Eliminar</a>
+                          </td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                    
+</table>
+{{ $users->links() }}
 
-                    {{ $users->links() }}
-                </div>
-            </div>
         </div>
     </div>
+
+<!----------------inicio modal------------------>
+    <div class="modal fade" id="miModalPersonalizado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Título del Modal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Aquí puedes colocar tu formulario, tablas o cualquier contenido.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </x-app-layout>
