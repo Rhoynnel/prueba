@@ -64,6 +64,10 @@ Route::delete('/tasas/{id}', [TasaController::class, 'destroy'])->middleware(['a
 
 route::get('/proveedores', [ProveedorController::class, 'proveedores'])->middleware(['auth', 'verified'])->name('proveedores');
 route::post('/proveedores', [ProveedorController::class, 'store'])->middleware(['auth', 'verified'])->name('proveedor.store');
+Route::put('proveedor{id}', [ProveedorController::class, 'update'])->middleware(['auth', 'verified'])->name('proveedor.update');
+Route::delete('/proveedor{id}',[ProveedorController::class, 'destroy'])->middleware(['auth', 'verified'])->name('proveedor.destroy');
+
+
 route::get('/proveedor.crear', [ProveedorController::class, 'create'])->middleware(['auth', 'verified'])->name('proveedor.crear');
 route::get('/proveedor.buscar', [ProveedorController::class, 'buscar'])->middleware(['auth', 'verified'])->name('proveedor.buscar');
 

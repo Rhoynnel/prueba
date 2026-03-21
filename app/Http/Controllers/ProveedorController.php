@@ -92,4 +92,32 @@ class ProveedorController extends Controller
 
         return view('compra.create', compact('proveedores'))->with('success', 'Proveedor registrado exitosamente.');
     }
+    public function destroy($id)
+    {
+        $proveedor = Proveedor::findOrFail($id);
+        $proveedor->delete();
+        return redirect()->route('proveedores')->with('success', 'Proveedor eliminado exitosamente.');
+    }
+    public function update(Request $request )
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:proveedores,id',
+            'rif' => 'required|string|max:20',
+            'nombre' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'direccion' => 'required|string|max:255',
+        ]);
+        $proveedor = Proveedor::findOrFail($request->param('id'));
+        $proveedor->rif = $request->input('rif');
+        $proveedor->nombre = $request->input('nombre');
+        $proveedor->telefono = $request->input('telefono');
+        $proveedor->direccion = $request->input('direccion');
+        $proveedor->save();
+
+        $proveedores = Proveedor::find($proveedor->id)->get();
+
+        return view('compra.create', compact('proveedores'))->with('success', 'Proveedor registrado exitosamente.');
+    }
+
+
 }

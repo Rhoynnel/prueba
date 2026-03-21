@@ -6,17 +6,23 @@
     </x-slot>
 
     <div class="container">
-        <div>
-            <div>
-                <div>
-                    @include('profile.partials.update-profile-information-form')
-                </div>
+        <div class="row align-items-md-stretch">
+            <div class="col-md-6">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <div>
+                     @include('profile.partials.update-profile-information-form')
+                    </div>
+             </div>
             </div>
 
-            <div>
-                <div>
-                    @include('profile.partials.update-password-form')
+            <div class="col-md-6">
+
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <div>
+                        @include('profile.partials.update-password-form')
+                    </div>
                 </div>
+            </div>
             </div>
 
             <div>

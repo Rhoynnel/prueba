@@ -30,4 +30,11 @@ class CategoriaController extends Controller
 
         return redirect()->route('producto.crear')->with('success', 'Categoria creada exitosamente.');
     }
+    public function destroy($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        $categoria->delete();
+        return redirect()->route('categorias')->with('success', 'Categoria eliminada exitosamente.');
+    }
+
 }

@@ -11,7 +11,6 @@
             <!-- Page Heading -->
             @isset($header)
             <div class="container">
-                <div class="b-example-divider mb-0"></div>
                 <header >
                     <div>
                         {{ $header }}
@@ -22,7 +21,11 @@
 
             <!-- Page Content -->
             <main>
+                <div class="container">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
                 {{ $slot }}
+                </div>
+                </div>
             </main>
             
         <!-- JS de Bootstrap 5 -->
