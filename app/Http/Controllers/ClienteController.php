@@ -44,9 +44,10 @@ class ClienteController extends Controller
     public function store(Request $request){
         $request->validate([
             'cedula' => 'required|unique:clientes',
-            'nombreCompleto' => 'required',
-            'direccion' => 'required',
-            'telefono' => 'required',
+            'nombreCompleto' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'origen' => 'required|string|max:255',
 
         ]);
 
@@ -57,11 +58,51 @@ class ClienteController extends Controller
         $cliente->telefono = $request->input('telefono');
         $cliente->save();
 
-        $cliente= Cliente::where('cedula', $request->input('cedula'))->first();
-        $tasaVigente= Tasa::orderBy('fecha', 'desc')->first();
-        
+               
+        if($request->input('origen') == 'despacho'){
+            $cliente= Cliente::where('cedula', $request->input('cedula'))->first();
+            $tasaVigente= Tasa::orderBy('fecha', 'desc')->first();
+            return view('despacho.create',compact('cliente', 'tasaVigente'))->with('success', 'Cliente creado exitosamente.');
+        }else{
+            $clientes= Cliente::paginate(5);
+            return view('cliente.index',compact('clientes'))->with('success', 'Cliente creado exitosamente.');
+        }
 
-
-        return view('despacho.create',compact('cliente', 'tasaVigente'))->with('success', 'Cliente creado exitosamente.');
     }
+
+    public function destroy($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        $cliente->delete();
+        return redirect()->route('clientes')->with('success', 'Cliente eliminado exitosamente.');
+    }
+
+    public function update(Request $request )
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:clientes,id',
+            'cedula' => 'required|unique:clientes',
+            'nombreCompleto' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+        ]);
+        $cliente = Cliente::findOrFail($request->id);
+        $cliente->cedula = $request->cedula;
+        $cliente->nombreCompleto = $request->nombreCompleto;
+        $cliente->direccion = $request->direccion;
+        $cliente->telefono = $request->telefono;
+
+
+        if($cliente->save()){
+            $clientes= Cliente::paginate(5);
+            return view('cliente.index',compact('clientes'))->with('success', 'Cliente actualizado exitosamente.');
+        }else{
+            return back()->with('error', 'No se pudieron guardar los cambios.');
+        }
+
+       
+
+        
+    }
+        
 }

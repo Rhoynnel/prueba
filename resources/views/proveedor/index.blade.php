@@ -57,6 +57,8 @@
                                         <form action="{{ route('proveedor.update', $proveedor) }}" method="POST">
                                             @csrf
                                             @method('PUT')
+                                            <input type="hidden" name="id" id="editId{{$proveedor->id}}" value="{{ $proveedor->id }}" required>
+                                            
                                             <div class="modal-body text-start">
                                                 <div class="form-floating mb-3">
                                                     <input name="rif" type="text" class="form-control" id="editRif{{$proveedor->id}}" value="{{ old('rif', $proveedor->rif) }}" required>

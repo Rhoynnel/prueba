@@ -13,21 +13,23 @@
         @csrf
         @method('put')
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
+        <div class="form-floating mb-2">
+            <input id="update_password_current_password" name="current_password" type="password" class="form-control" autocomplete="current-password" />
+            <label for="update_password_current_password">{{__('Current Password')}}</label>
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+        <div class="form-floating mb-2">
+            
+            <input id="update_password_password" name="password" type="password" class="form-control" autocomplete="new-password" />
+            <label for="update_password_password">{{__('New Password')}}</label>
             <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+        <div class="form-floating mb-2">
+            
+            <input id="update_password_password_confirmation" name="password_confirmation" type="password" class="form-control" autocomplete="new-password" />
+            <label for="update_password_password_confirmation">{{__('Confirm New Password')}}</label>
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 

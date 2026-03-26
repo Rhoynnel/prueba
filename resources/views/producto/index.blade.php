@@ -1,49 +1,142 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-           <a href="{{ route('productos') }}">{{ __('Productos') }}</a> <a href="{{ route('categorias') }}">{{ __('Categorias') }}</a>
+        <h2 >
+           {{ __('Productos') }}
         </h2>
         
 
     </x-slot>
     
 
-    <div class="py-12" x-data="productPage()">
+    <div class="container mt-4">
         @if(session('success'))
-            <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                {{ session('success') }}
-            </div>
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         @if(session('error'))
-            <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                {{ session('error') }}
-            </div>
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex gap-2">
-                <x-primary-button @click="$dispatch('open-modal','add-product')">{{ __('Agrega Producto') }}</x-primary-button>
-                <x-secondary-button @click="$dispatch('open-modal','import-products')">{{ __('Carga masiva') }}</x-secondary-button>
-            </div>
-            <br>
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
+        <div class="flex justify-end mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AgregaProducto">
+                + Nuevo Producto
+            </button>
+            
+            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#CargaMasiva">
+                Carga Masiva
+            </button>
+
+        </div>
+        
+            <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Categoria</th>
+                    <th>Stock</th>
+                    <th>Precio Venta</th>
+                    <th>Precio Compra</th>
+                    <th class="text-center">Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                            
                         
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Codigo</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Nombre</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Categoria</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
                             @foreach ($productos as $item)
-                                <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
-                                    <td class="px-4 py-2 border">{{ $item->codigo }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->nombre }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->categoria->name }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->stock_actual }}</td>
+                                <tr>
+                                    <td >{{ $item->codigo }}</td>
+                                    <td >{{ $item->nombre }}</td>
+                                    <td >{{ $item->categoria->name }}</td>
+                                    <td >{{ $item->stock_actual }}</td>
+                                    <td >{{ $item->precio_venta }}</td>
+                                    <td >{{ $item->precio_compra }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#EditarProducto{{$item->id}}">
+                                    Editar
+                                </button>
+
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#EliminarProducto{{$item->id}}">
+                                    Eliminar
+                                </button>
+
+        <div class="modal fade" id="EditarProducto{{$item->id}}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edita Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('producto.update', $item) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" value="{{$item->id}}" id="newId{{$item->id}}" required/>
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <input name="codigo" type="text" class="form-control" value="{{ old('codigo', $item->codigo) }}" id="newCodigo{{$item->id}}" placeholder="Codigo" required>
+                            <label for="newCodigo">Codigo</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="barra" type="text" class="form-control" value="{{ old('barra', $item->barra) }}"id="newbarra{{$item->id}}" placeholder="Barra">
+                            <label for="newBarra">Barra</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input name="nombre" type="text" class="form-control" value="{{ old('nombre', $item->nombre) }}"id="newNombre{{$item->id}}" placeholder="Nombre" required>
+                            <label for="newNombre">Nombre</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select name="categoriaid" id="categoriaid" class="form-select" required>
+                                <option value="{{ $item->categoria->id }}">{{$item->categoria->name }}</option>
+                                @foreach ($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="stock_actual" type="number" class="form-control" value="{{ old('stock_actual', $item->stock_actual) }}"id="newStock{{$item->id}}" placeholder="Stock" required>
+                            <label for="newStock">Stock</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="precio_compra" type="number" step="0.01" min="0.01" class="form-control" value="{{ old('precio_compra', $item->precio_compra) }}"id="newPreciocompa{{$item->id}}" placeholder="Precio Compra" required>
+                            <label for="newPrecioCompra">Precio Compra</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="precio_venta" type="number" step="0.01" min="0.01" class="form-control" value="{{ old('precio_venta', $item->precio_venta) }}"id="newPrecioVenta{{$item->id}}" placeholder="Precio Venta" required>
+                            <label for="newPrecioVenta">Precio Venta</label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Actualizar</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+                            <div class="modal fade" id="EliminarProducto{{$item->id}}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title">¿Eliminar?</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Confirma que desea eliminar a <strong>{{ $item->nombre }}</strong>.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{{ route('producto.destroy', $item) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                    </td>
+
                                 </tr>
                             @endforeach
 
@@ -51,127 +144,99 @@
                     </table>
 
                     {{ $productos->links() }}
+
+           
+
+    <!-- Product modal -->
+    <div class="modal fade" id="AgregaProducto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('producto.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <input name="codigo" type="text" class="form-control" id="newCodigo" placeholder="Codigo" required>
+                            <label for="newCodigo">Codigo</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="barra" type="text" class="form-control" id="newbarra" placeholder="Barra">
+                            <label for="newBarra">Barra</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input name="nombre" type="text" class="form-control" id="newNombre" placeholder="Nombre" required>
+                            <label for="newNombre">Nombre</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select name="categoriaid" id="categoriaid" class="form-select" required>
+                                <option value="">{{ __('Categoria') }}</option>
+                                @foreach ($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="stock_actual" type="number" class="form-control" id="newStock" placeholder="Stock" required>
+                            <label for="newStock">Stock</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="precio" type="number" step="0.01" min="0.01" class="form-control" id="newPreciocompa" placeholder="Precio Compra" required>
+                            <label for="newPrecioCompra">Precio Compra</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="precio_venta" type="number" step="0.01" min="0.01" class="form-control" id="newPrecioVenta" placeholder="Precio Venta" required>
+                            <label for="newPrecioVenta">Precio Venta</label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Agregar</button>
+                        </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
+ 
+    <!-- editar producto modal -->
+    
 
-    <!-- Product modal -->
-    <x-modal name="add-product">
-        <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Agregar Nuevo Producto') }}</h2>
-            <form action="{{ route('productos') }}" method="POST" class="mt-4">
-                @csrf
-                <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-6">
-                    <div class="sm:col-span-3">
-                        <x-input-label for="codigo" :value="__('Codigo')" />
-                        <x-text-input id="codigo" name="codigo" class="block mt-1 w-full" autofocus />
-                    </div>
-                    <div class="sm:col-span-3">
-                        <x-input-label for="barra" :value="__('Barra')" />
-                        <x-text-input id="barra" name="barra" class="block mt-1 w-full" />
-                    </div>
-                    <div class="sm:col-span-3">
-                        <x-input-label for="nombre" :value="__('Nombre')" />
-                        <x-text-input id="nombre" name="nombre" class="block mt-1 w-full" />
-                    </div>
-                    <div class="sm:col-span-3">
-                        <x-input-label for="stock_actual" :value="__('Stock Actual')" />
-                        <x-text-input id="stock_actual" name="stock_actual" class="block mt-1 w-full" />
-                    </div>
-                    <div class="sm:col-span-3">
-                        <x-input-label for="categoriaid" :value="__('Categoria')" />
-                        <div class="flex items-center gap-2">
-                            <select id="categoriaid" name="categoriaid" class="block w-full rounded-md">
-                                @foreach ($categorias as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                            <button type="button" class="p-2 bg-blue-500 text-white rounded" @click="$dispatch('open-modal','add-category')">+</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center justify-end mt-6">
-                    <x-secondary-button @click="$dispatch('close-modal','add-product')" class="mr-4">
-                        {{ __('Cancelar') }}
-                    </x-secondary-button>
-                    <x-primary-button>
-                        {{ __('Agregar Producto') }}
-                    </x-primary-button>
-                </div>
-            </form>
-        </div>
-    </x-modal>
 
-    <!-- Category modal -->
-    <x-modal name="add-category">
-        <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Agregar Nueva Categoria') }}</h2>
-            <form @submit.prevent="addCategory" class="mt-4">
-                <div>
-                    <x-input-label for="newcat" :value="__('Nombre categoria')" />
-                    <x-text-input id="newcat" x-model="newCategory" class="block mt-1 w-full" />
-                </div>
-                <div class="flex items-center justify-end mt-6">
-                    <x-secondary-button @click="$dispatch('close-modal','add-category')" class="mr-4">
-                        {{ __('Cancelar') }}
-                    </x-secondary-button>
-                    <x-primary-button type="submit">
-                        {{ __('Guardar Categoria') }}
-                    </x-primary-button>
-                </div>
-            </form>
-        </div>
-    </x-modal>
+    
 
     <!-- Import modal -->
-    <x-modal name="import-products">
-        <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Carga Masiva de Productos y Categorías') }}</h2>
+    <div class="modal fade" id="CargaMasiva" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">{{ __('Carga Masiva de Productos y Categorías') }}</h3>
+                </div>
             <form action="{{ route('producto.import') }}" method="POST" enctype="multipart/form-data" class="mt-4">
                 @csrf
-                <div class="mt-4">
-                    <x-input-label for="excel" :value="__('Archivo (xlsx o csv)')" />
-                    <input id="excel" type="file" name="file" accept=".xlsx,.csv" class="mt-2 block w-full" required />
+                <div class="form-floating mb-3">
+                    
+                    <input id="excel" type="file" name="file" accept=".xlsx,.csv" class="form-control" required />
+                    <label for="excel">{{__('Archivo (xlsx o csv)')}}</label>
                     <x-input-error :messages="$errors->get('file')" class="mt-2" />
                 </div>
                 <div class="flex items-center justify-end mt-6">
-                    <x-secondary-button @click="$dispatch('close-modal','import-products')" class="mr-4">
-                        {{ __('Cancelar') }}
-                    </x-secondary-button>
-                    <x-primary-button type="submit">
-                        {{ __('Importar') }}
-                    </x-primary-button>
+                    <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Agregar</button>
+                        </div>
                 </div>
             </form>
+            </div>
+            </div>
         </div>
-    </x-modal>
+    </div>
+</div>
+
+    
 
 </x-app-layout>
 
-<script>
-    function productPage() {
-        return {
-            newCategory: '',
-            addCategory() {
-                if (!this.newCategory) return;
-                axios.post('{{ route('categoria.store') }}', { name: this.newCategory })
-                    .then(response => {
-                        // append option to select
-                        const sel = document.getElementById('categoriaid');
-                        const opt = document.createElement('option');
-                        opt.value = response.data.id;
-                        opt.textContent = response.data.name;
-                        sel.appendChild(opt);
-                        sel.value = response.data.id;
-                        this.newCategory = '';
-                        this.$dispatch('close-modal','add-category');
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('No se pudo guardar la categoría, revisa la consola para más detalles.');
-                    });
-            }
-        }
-    }
-</script>
+

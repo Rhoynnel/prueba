@@ -73,4 +73,41 @@ class ProductoController extends Controller
                     ->route('productos')
                     ->with('success', 'Importación completada con éxito.');
     }
+
+    public function destroy($id)
+    {
+        $producto = Producto::findOrFail($id);
+        $producto->delete();
+        return redirect()->route('productos')->with('success', 'Producto eliminado exitosamente.');
+    }
+
+    public function update(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:productos,id',
+        // Esto permite que el producto conserve su propio código sin dar error
+        'codigo' => 'required|unique:productos,codigo,' . $request->id,
+        'barra' => 'nullable|unique:productos,barra,' . $request->id,
+        'nombre' => 'required',
+        'stock_actual' => 'required|integer|min:0',
+        'categoriaid' => 'required|exists:categorias,id',
+        'precio_venta' => 'required|numeric',
+        'precio_compra' => 'required|numeric',
+    ]);
+
+    $producto = Producto::findOrFail($request->id);
+    $producto->update([
+        'codigo' => $request->codigo,
+        'barra' => $request->barra,
+        'nombre' => $request->nombre,
+        'stock_actual' => $request->stock_actual,
+        'categorias_id' => $request->categoriaid,
+        'precio_venta' => $request->precio_venta,
+        'precio_compra' => $request->precio_compra,
+    ]);
+
+    // IMPORTANTE: Redirigir para que el mensaje de éxito se guarde en la sesión
+    return redirect()->back()->with('success', 'Producto actualizado exitosamente.');
+}
+
 }

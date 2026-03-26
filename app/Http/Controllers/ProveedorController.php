@@ -98,26 +98,38 @@ class ProveedorController extends Controller
         $proveedor->delete();
         return redirect()->route('proveedores')->with('success', 'Proveedor eliminado exitosamente.');
     }
-    public function update(Request $request )
-    {
-        $request->validate([
-            'id' => 'required|integer|exists:proveedores,id',
-            'rif' => 'required|string|max:20',
-            'nombre' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20',
-            'direccion' => 'required|string|max:255',
-        ]);
-        $proveedor = Proveedor::findOrFail($request->param('id'));
-        $proveedor->rif = $request->input('rif');
-        $proveedor->nombre = $request->input('nombre');
-        $proveedor->telefono = $request->input('telefono');
-        $proveedor->direccion = $request->input('direccion');
-        $proveedor->save();
+    public function update(Request $request)
+{
+    // 1. Validación
+    $request->validate([
+        'id' => 'required|integer|exists:proveedores,id',
+        'rif' => 'required|string|max:20',
+        'nombre' => 'required|string|max:255',
+        'telefono' => 'required|string|max:20',
+        'direccion' => 'required|string|max:255',
+    ]);
 
-        $proveedores = Proveedor::find($proveedor->id)->get();
+    // 2. Localización (Cambiado param por input o el acceso directo)
+    $proveedor = Proveedor::findOrFail($request->id);
 
-        return view('compra.create', compact('proveedores'))->with('success', 'Proveedor registrado exitosamente.');
+    // 3. Actualización
+    $proveedor->rif = $request->rif;
+    $proveedor->nombre = $request->nombre;
+    $proveedor->telefono = $request->telefono;
+    $proveedor->direccion = $request->direccion;
+    
+    // Guardamos y verificamos el éxito
+    if ($proveedor->save()) {
+        // Traemos todos los proveedores para el select de la vista de compras
+        $proveedores = Proveedor::paginate(5); 
+
+        return view('proveedor.index', compact('proveedores'))
+            ->with('success', 'Proveedor actualizado exitosamente.');
     }
+
+    // En caso de falla inesperada al guardar
+    return back()->with('error', 'No se pudieron guardar los cambios.');
+}
 
 
 }

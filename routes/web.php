@@ -25,6 +25,8 @@ Route::get('/producto.crear', function () {
 */
 Route::get('/productos', [ProductoController::class, 'productos'])->middleware(['auth', 'verified'])->name('productos');
 Route::post('/productos', [ProductoController::class, 'store'])->middleware(['auth', 'verified'])->name('producto.store');
+Route::put('/producto{id}', [ProductoController::class, 'update'])->middleware(['auth', 'verified'])->name('producto.update');
+route::delete('/producto{id}',[ProductoController::class, 'destroy'])->middleware(['auth', 'verified'])->name('producto.destroy');
 Route::get('/producto.crear', [ProductoController::class, 'create'])->middleware(['auth', 'verified'])->name('producto.crear');
 
 Route::get('/categorias', [CategoriaController::class, 'categorias'])->middleware(['auth', 'verified'])->name('categorias');
@@ -49,6 +51,8 @@ route::put('/compra.cambiarStatus/{id}', [CompraController::class, 'cambiarStatu
 
 route::get('/clientes', [ClienteController::class, 'clientes'])->middleware(['auth', 'verified'])->name('clientes');
 route::post('/clientes', [ClienteController::class, 'store'])->middleware(['auth', 'verified'])->name('cliente.store');
+route::put('/cliente{id}',[ClienteController::class, 'update'])->middleware(['auth', 'verified'])->name('cliente.update');
+route::delete('/cliente{id}',[ClienteController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cliente.destroy');
 route::get('/cliente.crear', [ClienteController::class, 'create'])->middleware(['auth', 'verified'])->name('cliente.crear');
 route::get('/cliente.buscar', [ClienteController::class, 'buscar'])->middleware(['auth', 'verified'])->name('cliente.buscar');
 
@@ -64,7 +68,7 @@ Route::delete('/tasas/{id}', [TasaController::class, 'destroy'])->middleware(['a
 
 route::get('/proveedores', [ProveedorController::class, 'proveedores'])->middleware(['auth', 'verified'])->name('proveedores');
 route::post('/proveedores', [ProveedorController::class, 'store'])->middleware(['auth', 'verified'])->name('proveedor.store');
-Route::put('proveedor{id}', [ProveedorController::class, 'update'])->middleware(['auth', 'verified'])->name('proveedor.update');
+Route::put('/proveedor{id}', [ProveedorController::class, 'update'])->middleware(['auth', 'verified'])->name('proveedor.update');
 Route::delete('/proveedor{id}',[ProveedorController::class, 'destroy'])->middleware(['auth', 'verified'])->name('proveedor.destroy');
 
 
