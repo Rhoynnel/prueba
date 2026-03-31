@@ -1,42 +1,48 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-           <a href="{{ route('despachos') }}">{{ __('Despachos') }}</a>
+        <h2 >
+           {{ __('Despachos') }}
         </h2>
         
 
     </x-slot>
     
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="alert alert-danger">
-                        @if ($errors->any())
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            
-                        @endif
+    <div x-data>
+        <div>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+        </div>
+                <div class="flex justify-end mb-2">
+                    <div  class="fa fa-align-left" ></i>
+                       Tasa Vigente bs. {{ $tasaVigente->tasa ?? 'No disponible' }} - con Fecha de: {{ $tasaVigente->fecha ?? 'No disponible' }}
                     </div>
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class=" border-separate border border-gray-400 w-full text-sm text-gray-500 dark:text-gray-400">
+                    
+                    <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <table class="table table-hover">
                         <thead>
-                                <tr><th class="border border-gray-300">Rif o Cedula</th><td class="border border-gray-300" >{{ $cliente->cedula }}</td><th class="border border-gray-300">Nombre</th><td class="border border-gray-300">{{ $cliente->nombreCompleto }}</td></tr>
-                                
-                                <tr><th class="border border-gray-300">Telefono</th><td class="border border-gray-300">{{ $cliente->telefono }}</td><th class="border border-gray-300">Direccion</th><td class="border border-gray-300">{{ $cliente->direccion }}</td></tr>   
+                                <tr>
+                                    <th >Rif o Cedula</th>
+                                    <th >Nombre</th>
+                                    <th >Telefono</th>
+                                    <th >Direccion</th>
+                                </tr>   
                         </thead>
                         <tbody>
                             <tr>
-                                <th class="border border-gray-300">Tasa Vigente</th><td class="border border-gray-300">{{ $tasaVigente->tasa ?? 'No disponible' }} - con Fecha de: {{ $tasaVigente->fecha ?? 'No disponible' }}</td>
+                                <td >{{ $cliente->cedula }}</td>
+                                <td >{{ $cliente->nombreCompleto }}</td>
+                                <td >{{ $cliente->telefono }}</td>
+                                <td >{{ $cliente->direccion }}</td>
+
                             </tr>
                         </tbody>
-
-
                     </table>
+                    </div>
                     <form method="POST" action="{{ route('despacho.store') }}">
                         @csrf
                         <input type="hidden" name="clientes_id" value="{{ $cliente->id }}">
