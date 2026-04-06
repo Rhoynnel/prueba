@@ -55,10 +55,10 @@
                              <tr>
                                 <th >Cedula</th>
                                 <th >Nombre</th>
-                                <th >Direccion</th>
-                                <th >Telefono</th>
                                 <th >Tasa</th>
                                 <th >Nro de Despacho</th>
+                                <th >Total en Dolares</th>
+                                <th >Total en Bolivares</th>
                                 <th >Estatus</th>
                                 <th >Acciones</th>
                             </tr>
@@ -68,10 +68,10 @@
                                 <tr >
                                     <td >{{ $item->cliente->cedula }}</td>
                                     <td >{{ $item->cliente->nombreCompleto }}</td>
-                                    <td >{{ $item->cliente->direccion }}</td>
-                                    <td >{{ $item->cliente->telefono }}</td>
                                     <td >{{ $item->tasa ? $item->tasa->tasa : 'N/A' }}</td>
                                     <td >{{ $item->numeroDespacho() }}</td>
+                                    <td >{{ number_format($item->total_dolares, 2) }}</td>
+                                    <td >{{ number_format($item->total_bs, 2) }}</td>
                                     <td >
                                         @if ($item->status == 1)
                                             Cargada
@@ -81,9 +81,13 @@
                                     </td>
                                     <td class="px-4 py-2 border text-center">
                                         @if ($item->status == 1)
-                                        <a href="{{ route('despacho.cargar', $item->id) }}" class="btn btn-success">Ver Detalle</a>
+                                        <a href="{{ route('despacho.pdf', $item->id) }}" class="btn btn-success">Ver Detalle</a>
                                         @else
-                                            <a href="{{ route('despacho.cargar', $item->id) }}" class="btn btn-primary">Cargar</a>
+                                        <form action="{{ route('cliente.buscar') }}" method="GET">
+                                            @csrf
+                                            <input type="hidden" name="cedula" value="{{$item->cliente->cedula}}" >
+                                            <button type="submit" class="btn btn-primary">Cargar</button>
+                                        </form>
                                         @endif
                                         
                                     </td>

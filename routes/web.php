@@ -9,6 +9,7 @@ use App\Http\Controllers\DespachoController;
 use App\Http\Controllers\TasaController;
 use App\Http\Controllers\ProveedorController;
 
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +41,7 @@ route::get('/despacho.cargar', [DespachoController::class, 'cargar'])->middlewar
 route::post('/despacho.agregarProducto', [DespachoController::class, 'agregarProducto'])->middleware(['auth', 'verified'])->name('despacho.agregarProducto');
 route::delete('/despacho.detalle/{id}', [DespachoController::class, 'destroyDetalle'])->middleware(['auth', 'verified'])->name('despacho.destroyDetalle');
 route::put('/despacho.cambiarStatus/{id}', [DespachoController::class, 'cambiarStatus'])->middleware(['auth', 'verified'])->name('despacho.cambiarStatus');
+route::get('/despacho/{id}/pdf', [DespachoController::class, 'generarPdf'])->middleware(['auth', 'verified'])->name('despacho.pdf');
 
 route::get('/compras', [CompraController::class, 'compras'])->middleware(['auth', 'verified'])->name('compras');
 route::post('/compra.crear', [CompraController::class, 'create'])->middleware(['auth', 'verified'])->name('compra.crear');
