@@ -50,6 +50,7 @@ route::post('/compras', [CompraController::class, 'store'])->middleware(['auth',
 route::post('/compra.agregarProducto', [CompraController::class, 'agregarProducto'])->middleware(['auth', 'verified'])->name('compra.agregarProducto');
 route::delete('/compra.detalle/{id}', [CompraController::class, 'destroyDetalle'])->middleware(['auth', 'verified'])->name('compra.destroyDetalle');
 route::put('/compra.cambiarStatus/{id}', [CompraController::class, 'cambiarStatus'])->middleware(['auth', 'verified'])->name('compra.cambiarStatus');
+route::get('/compra/{id}/pdf', [CompraController::class, 'generarPdf'])->middleware(['auth', 'verified'])->name('compra.pdf');
 
 route::get('/clientes', [ClienteController::class, 'clientes'])->middleware(['auth', 'verified'])->name('clientes');
 route::post('/clientes', [ClienteController::class, 'store'])->middleware(['auth', 'verified'])->name('cliente.store');

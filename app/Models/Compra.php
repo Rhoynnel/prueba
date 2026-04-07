@@ -22,4 +22,9 @@ class Compra extends Model
     {
         return $this->hasMany(DetalleCompra::class, 'compras_id');
     }
+
+    public function numeroCompra()
+    {
+        return "C-" . str_pad($this->id, 6, '0', STR_PAD_LEFT);
+    }
 }

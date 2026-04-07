@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Compra;
 use App\Models\Producto;
 use App\Models\detalleCompra;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class CompraController extends Controller
 {
     public function compras(){
-        $compras = Compra::with('proveedor')->paginate(5);
+        $compras = Compra::with('proveedor')
+        ->orderBy('id', 'desc')
+        ->paginate(5);
         return view('compra.index',compact('compras'));
     }
 
@@ -60,6 +63,7 @@ class CompraController extends Controller
     }
 
     public function agregarProducto(Request $request){
+       
         $request->validate([
             'compra_id' => 'required|integer|exists:compras,id',
             'producto_id' => 'required|integer|exists:productos,id',
@@ -97,6 +101,14 @@ class CompraController extends Controller
         $compra->save();
 
         return redirect()->route('compras')->with('success', 'Compra completada exitosamente.');
+    }
+
+    public function generarPDF($id)
+    {
+        $compra = Compra::with('proveedor')->find($id);
+        $detalleCompra = DetalleCompra::where('compras_id', $id)->with('producto')->get();
+        $pdf = PDF::loadView('pdf.compra', compact('compra', 'detalleCompra'));
+        return $pdf->download('compra-'.$id.'.pdf');
     }
 
     

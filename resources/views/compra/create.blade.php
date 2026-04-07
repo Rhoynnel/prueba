@@ -1,55 +1,60 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-           <a href="{{ route('compras') }}">{{ __('Compras') }}</a>
+        <h2>
+           {{ __('Compras') }}
         </h2>
-        
-
     </x-slot>
     
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="alert alert-danger">
-                        @if ($errors->any())
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            
-                        @endif
-                    </div>
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class=" border-separate border border-gray-400 w-full text-sm text-gray-500 dark:text-gray-400">
+        <div x-data>
+        <div>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+        </div>
+        <div class="row">
+        <div class="col-md-12">
+            <div class="h-100 p-2 bg-body-tertiary border rounded-3">
+                    <table
+                        class="table table-hover">
                         <thead>
-                                <tr><th class="border border-gray-300">Rif o Cedula</th><td class="border border-gray-300" >{{ $proveedores->rif }}</td><th class="border border-gray-300">Nombre</th><td class="border border-gray-300">{{ $proveedores->nombre }}</td></tr>
-                                
-                                <tr><th class="border border-gray-300">Telefono</th><td class="border border-gray-300">{{ $proveedores->telefono }}</td><th class="border border-gray-300">Direccion</th><td class="border border-gray-300">{{ $proveedores->direccion }}</td></tr>   
+                                <tr><th>Rif o Cedula</th><td>{{ $proveedores->rif }}</td><th>Nombre</th><td>{{ $proveedores->nombre }}</td></tr>
+                                <tr><th>Telefono</th><td>{{ $proveedores->telefono }}</td><th>Direccion</th><td>{{ $proveedores->direccion }}</td></tr>   
                         </thead>
                     </table>
+            </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="h-100 p-2 bg-body-tertiary border rounded-3">
                     <form method="POST" action="{{ route('compra.store') }}">
                         @csrf
                         <input type="hidden" name="proveedores_id" value="{{ $proveedores->id }}">
                         <div class="mt-4">
-                            <x-input-label for="fecha" :value="__('Fecha de Compra')" />
-                            <x-text-input id="fecha" class="block mt-1 w-full" type="date" name="fecha" value="{{ old('fecha') }} " required autofocus  />
+                            <label for="fecha">Fecha de Compra</label>
+                            <input id="fecha" class="form-control" type="date" name="fecha" value="{{ old('fecha') }} " required autofocus  />
                             <x-input-error :messages="$errors->get('fecha')" class="mt-2" />
                         
-                            <x-input-label for="N-Factura" :value="__('Nro de Factura')" />
-                            <x-text-input id="numero_factura" class="uppercase block mt-1 w-full" type="text" name="numero_factura" value="{{ old('numero_factura') }}" autofocus />
+                            <label for="N-Factura">Nro de Factura</label>
+                            <input id="numero_factura" class="form-control" type="text" name="numero_factura" value="{{ old('numero_factura') }}" autofocus />
                             <x-input-error :messages="$errors->get('numero_factura')" class="mt-2" />
 
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ml-4">
+                            <button type="submit" class="btn btn-success">
                                 {{ __('Registrar Compra') }}
-                            </x-primary-button>
-                </div>
+                            </button>
+                        </div>
+                    </form>
             </div>
+        </div>
+        <div class="col-md-4"></div>
         </div>
     </div>
 </x-app-layout>

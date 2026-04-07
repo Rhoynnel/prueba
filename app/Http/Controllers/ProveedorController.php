@@ -22,13 +22,13 @@ class ProveedorController extends Controller
     public function buscar(Request $request)
     {
         $request->validate([
-            'cedula' => 'required|string|max:20',
+            'rif' => 'required|string|max:20',
         ]);
 
-        $cedula = $request->input('cedula');
+        $rif = $request->input('rif');
 
         // 1. Buscamos el proveedor por RIF/Cédula
-        $proveedor = Proveedor::where('rif', $cedula)->first();
+        $proveedor = Proveedor::where('rif', $rif)->first();
 
         // Si NO existe el proveedor, redirigimos fuera de una vez
         if (!$proveedor) {

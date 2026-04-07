@@ -1,47 +1,45 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            <a href="{{ route('compras') }}">{{ __('Compras') }}</a>
+            {{ __('Compras') }}
         </h2>
-
-
     </x-slot>
-
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+       <div x-data>
+        <div>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+        </div>
+        <div class="row">
+        <div class="col-md-12">
+            <div class="h-100 p-2 bg-body-tertiary border rounded-3">
                     <table
-                        class=" border-separate border border-gray-400 w-full text-sm text-gray-500 dark:text-gray-400">
+                        class="table table-hover">
                         <thead>
                            
                             <tr>
+                                <th>Rif o Cedula</th>
+                                <th>Nombre</th>
+                                <th>Telefono</th>
+                                <th>Direccion</th>
+                                <th>Fecha</th>
+                                <th>Nro Factura</th>
+                                <th>Estatus</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $compras->proveedor->rif  }}</td>
                                 
-                                    
-                                
-                                <th class="border border-gray-300">Rif o Cedula</th>
-                                <td class="border border-gray-300">{{ $compras->proveedor->rif  }}</td>
-                                <th class="border border-gray-300">Nombre</th>
-                                <td class="border border-gray-300">{{ $compras->proveedor->nombre }}</td>
-                            </tr>
-
-                            <tr>
-                                <th class="border border-gray-300">Telefono</th>
-                                <td class="border border-gray-300">{{ $compras->proveedor->telefono }}</td>
-                                <th class="border border-gray-300">Direccion</th>
-                                <td class="border border-gray-300">{{ $compras->proveedor->direccion }}</td>
-                            </tr>
-                            <tr>
-                                <th class="border border-gray-300">Fecha</th>
-                                <td class="border border-gray-300">{{ $compras->fecha }}</td>
-                                <th class="border border-gray-300">Nro Factura</th>
-                                <td class="border border-gray-300">{{ $compras->numero_factura }}</td>
-                            </tr>
-                            <tr>
-                                <th class="border border-gray-300">Estatus</th>
-                                <td class="border border-gray-300">
+                                <td>{{ $compras->proveedor->nombre }}</td>
+                                <td>{{ $compras->proveedor->telefono }}</td>
+                                <td>{{ $compras->proveedor->direccion }}</td>
+                                <td>{{ $compras->fecha }}</td>
+                                <td>{{ $compras->numero_factura }}</td>
+                                <td>
                                     @if ($compras->status == 1)
                                         Cargada
                                     @else
@@ -49,79 +47,98 @@
                                     @endif
                                 </td>
                             </tr>
-                            
                         </thead>
                     </table>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="h-100 p-2 bg-body-tertiary border rounded-3">
+                                <div class="flex justify-end mb-3">
+                                    <center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AgregarProducto">Agregar Producto</button></center>
+                                </div>
+                                <div class="modal fade" id="AgregarProducto" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title">Agregar Producto</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('compra.agregarProducto') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="compra_id" value="{{ $compras->id }}">
+                                                <div class="modal-body">
+                                                    <div class="form-floating mb-3">
+                                                        <select id="producto_id" name="producto_id" class="form-select">
+                                                            @foreach ($productos as $producto)
+                                                                <option value="{{ $producto->id }}">{{ $producto->codigo }} - {{ $producto->nombre }} - {{ $producto->categoria->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <x-input-error :messages="$errors->get('producto_id')" class="mt-2" />
+                                                    </div>
+                                                    <div class="form-floating mb-3">
+                                                        <input id="cantidad" class="form-control" type="number" name="cantidad"
+                                                            :value="old('cantidad')" required />
+                                                        <x-input-error :messages="$errors->get('cantidad')" class="mt-2" />
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                    <button type="submit" class="btn btn-success">Agregar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
-                    <div class="flex items-center justify-end mt-4">
+                        <div class="col-md-4"><h3>Productos Agregados</h3></div>
+
+
+                        <div class="col-md-4">
+                            <div class="h-100 p-2 bg-body-tertiary border rounded-3">
+                                <div class="flex justify-end mb-3"><center>
                         <form action="{{ route('compra.cambiarStatus', $compras->id) }}" method="POST">
                             @csrf
                             @method('PUT')
-                            <x-primary-button type="submit" onclick="return confirm('¿Estás seguro de que deseas Cargar el Inventario?')">
+                            <button type="submit" class="btn btn-primary" onclick="return confirm('¿Estás seguro de que deseas Cargar el Inventario?')">
                                 {{ __('Cargar Compra') }}
-                            </x-primary-button>
-                        </form>
-                    </div>
-                    <div>Agregar Productos</div>
-                    <form action="{{ route('compra.agregarProducto') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="compra_id" value="{{ $compras->id }}">
-                        <div class="mt-4 flex flex-col md:flex-row gap-4 items-end">
-
-                            <div class="flex-1 w-full">
-                                <x-input-label for="producto_id" :value="__('Producto')" />
-                                <select id="producto_id" name="producto_id"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-700 dark:text-white">
-                                    @foreach ($productos as $producto)
-                                        <option value="{{ $producto->id }}">{{ $producto->codigo }} - {{ $producto->nombre }} - {{ $producto->categoria->name }}</option>
-                                    @endforeach
-                                </select>
-                                <x-input-error :messages="$errors->get('producto_id')" class="mt-2" />
+                            </button>
+                        </form></center>
+                                </div>
                             </div>
-
-                            <div class="w-full md:w-32">
-                                <x-input-label for="cantidad" :value="__('Cantidad')" />
-                                <x-text-input id="cantidad" class="block w-full" type="number" name="cantidad"
-                                    :value="old('cantidad')" required />
-                                <x-input-error :messages="$errors->get('cantidad')" class="mt-2" />
-                            </div>
-
-                            <div class="pb-1">
-                                <x-primary-button type="submit">
-                                    {{ __('+') }}
-                                </x-primary-button>
-                            </div>
-
                         </div>
-                    </form>
-                    <div class="mt-6">
-                        <h3 class="text-lg font-semibold mb-4">Productos Agregados</h3>
+                    </div>
+                    <div class="row">
+                        
+                    <div class="col-md-12">
+                        <div class="h-100 p-2 bg-body-tertiary border rounded-3">
                         <table
-                            class="border-separate border border-gray-400  text-sm text-gray-500 dark:text-gray-400">
+                            class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th class="border border-gray-300">Producto</th>
-                                    <th class="border border-gray-300">Categoria</th>
-                                    <th class="border border-gray-300">Cantidad</th>
+                                    <th>Producto</th>
+                                    <th>Categoria</th>
+                                    <th>Cantidad</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($detalleCompra as $detalle)
                                      
                                     <tr>
-                                        <td class="border border-gray-300">{{ $detalle->producto->codigo }}</td>
-                                        <td class="border border-gray-300">{{ $detalle->producto->nombre }}</td>
-                                        <td class="border border-gray-300">
+                                        <td >{{ $detalle->producto->codigo }}</td>
+                                        <td >{{ $detalle->producto->nombre }}</td>
+                                        <td >
                                             {{ $detalle->cantidad }}
                                         </td>
-                                        <td class="border border-gray-300"><button></button>
+                                        <td >
                                             <form action="{{ route('compra.destroyDetalle', $detalle->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <x-danger-button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
                                                     {{ __('Eliminar') }}
-                                                </x-danger-button>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>

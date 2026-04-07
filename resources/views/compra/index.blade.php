@@ -1,106 +1,89 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 >
             {{ __('Compras') }}
         </h2>
 
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div x-data="{ open: false, cedula: '' }" @keydown.window.escape="open = false" x-cloak>
-    
-    <button @click="open = true" class="flex items-center gap-2 px-3 py-1.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition text-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        Buscar Cédula
-    </button>
-
-    <div x-show="open" class="fixed max-w-xs inset-0 z-50 flex items-center justify-center p-4">
-        
-        <div x-show="open" 
-             x-transition:enter="ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             class="fixed inset-0 bg-black/40 backdrop-blur-[2px]" 
-             @click="open = false"></div>
-
-        <div x-show="open"
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-90"
-             x-transition:enter-end="opacity-100 scale-100"
-             class="relative bg-white rounded-xl shadow-xl max-w-xs overflow-hidden">
-            
-            <form action="{{ route('proveedor.buscar') }}" method="GET" class="p-4">
-                <div class="text-center mb-4">
-                    <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider">Consultar Cédula</h3>
-                </div>
-
-                <div class="relative">
-                    <input type="text" 
-                           name="cedula"
-                           x-model="cedula"
-                           x-on:input="cedula = $event.target.value.toUpperCase().replace(/[^VE0-9]/g, '')"
-                           class="text-center border-gray-200 rounded-lg focus:border-indigo-500 focus:ring-0 text-lg font-semibold tracking-widest uppercase"
-                           placeholder="V12345678"
-                           autofocus required>
-                </div>
-
-                <div class="mt-4 flex flex-col gap-2">
-                    <button type="submit" class="w-full bg-indigo-600 text-gray-400 py-2 rounded-lg font-medium hover:bg-indigo-700 transition">
-                        Buscar
-                    </button>
-                    <button type="button" @click="open = false" class="w-full text-xs text-gray-400 hover:text-gray-600 transition">
-                        Cerrar
-                    </button>
-                </div>
-            </form>
+    <div x-data>
+        <div>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
         </div>
-    </div>
-</div>
 
-
-
-
-            <!--<a href="#"><x-primary-button>{{ __('Agrega Compra') }}</x-primary-button></a>-->
-            <br>
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table class="w-full border-collapse border border-gray-400 text-sm text-gray-500 dark:text-gray-400 rounded-none shadow">
-                        
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Codigo</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Proveedor</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Fecha</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Nro Factura</th>
-                                <th class="px-4 py-2 border border-gray-300 text-left">Estatus</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($compras as $item)
-                                <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900">
-                                    <td class="px-4 py-2 border">{{ $item->id }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->proveedor->nombre }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->fecha }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->numero_factura }}</td>
-                                    <td class="px-4 py-2 border">
-                                        @if ($item->status == 1)
-                                            Cargada
-                                        @else
-                                            Sin Cargar
-                                        @endif
-
-                                    </td>
-                                </tr>
-                            @endforeach
-
-                        </tbody>
-                    </table>
-
-                    {{ $compras->links() }}
+        <div class="flex justify-end mb-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#NuevaCompra">Nueva Compra</button>
+            <!---modal para buscar proveedor -->
+            <div class="modal fade" id="NuevaCompra" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Buscar Proveedor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('proveedor.buscar') }}" method="GET">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-floating mb-3">
+                                <input name="rif" type="text"  class="form-control" id="rifInput" required autofocus>
+                                <label for="rifInput">RIF</label>
+                                <x-input-error :messages="$errors->get('cedula')" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Buscar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+        </div>
+           <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Proveedor</th>
+                    <th>Fecha</th>
+                    <th>Nro Factura</th>
+                    <th>Estatus</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($compras as $item)
+                    <tr>
+                        <td>{{ $item->numeroCompra() }}</td>
+                        <td>{{ $item->proveedor->nombre }}</td>
+                        <td>{{ $item->fecha }}</td>
+                        <td>{{ $item->numero_factura }}</td>
+                        <td>
+                            @if ($item->status == 1)
+                                Cargada
+                            @else
+                                Sin Cargar
+                            @endif
+                        </td>
+                        <td>
+                            @if ($item->status == 1)
+                                <a href="{{ route('compra.pdf', $item->id) }}" class="btn btn-success">Ver Detalle</a>
+                            @else
+                                <form action="{{ route('proveedor.buscar') }}" method="GET">
+                                    @csrf
+                                    <input type="hidden" name="rif" value="{{$item->proveedor->rif}}" >
+                                    <button type="submit" class="btn btn-primary">Cargar</button>
+                                </form>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+           </table>
+           {{ $compras->links() }}
     </div>
 </x-app-layout>
