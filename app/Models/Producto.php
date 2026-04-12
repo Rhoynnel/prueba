@@ -18,6 +18,8 @@ class Producto extends Model
         'nombre',
         'stock_actual',
         'categorias_id',
+        'precio_venta',
+        'precio_compra',
         // se pueden agregar precios u otros campos si la hoja los contiene
     ];
 

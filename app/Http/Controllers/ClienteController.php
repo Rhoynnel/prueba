@@ -77,32 +77,29 @@ class ClienteController extends Controller
         return redirect()->route('clientes')->with('success', 'Cliente eliminado exitosamente.');
     }
 
-    public function update(Request $request )
+    public function update(Request $request)
     {
+        // 1. Validar ignorando el ID actual en la regla unique
         $request->validate([
             'id' => 'required|integer|exists:clientes,id',
-            'cedula' => 'required|unique:clientes',
+            'cedula' => 'required|unique:clientes,cedula,' . $request->id, // <--- CAMBIO AQUÍ
             'nombreCompleto' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'telefono' => 'required|string|max:20',
         ]);
+
         $cliente = Cliente::findOrFail($request->id);
         $cliente->cedula = $request->cedula;
         $cliente->nombreCompleto = $request->nombreCompleto;
         $cliente->direccion = $request->direccion;
         $cliente->telefono = $request->telefono;
 
-
         if($cliente->save()){
-            $clientes= Cliente::paginate(5);
-            return view('cliente.index',compact('clientes'))->with('success', 'Cliente actualizado exitosamente.');
-        }else{
+            // 2. RECOMENDACIÓN: Usa redirect en lugar de view para evitar problemas de reenvío
+            return redirect()->route('clientes')->with('success', 'Cliente actualizado exitosamente.');
+        } else {
             return back()->with('error', 'No se pudieron guardar los cambios.');
         }
-
-       
-
-        
     }
         
 }

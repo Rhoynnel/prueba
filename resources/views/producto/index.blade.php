@@ -50,22 +50,43 @@
                                     <td >{{ $item->precio_venta }}</td>
                                     <td >{{ $item->precio_compra }}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#EditarProducto{{$item->id}}">
-                                    Editar
-                                </button>
-                                <x-modal-editaproducto :item="$item" :categorias="$categorias" />
+                                        <button type="button" 
+                                                class="btn btn-primary btn-sm btn-editar" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#ModalDinamico"
+                                                data-id="{{ $item->id }}"
+                                                data-codigo="{{ $item->codigo }}"
+                                                data-barra="{{ $item->barra }}"
+                                                data-nombre="{{ $item->nombre }}"
+                                                data-categoria="{{ $item->categorias_id }}"
+                                                data-stock="{{ $item->stock_actual }}"
+                                                data-compra="{{ $item->precio_compra }}"
+                                                data-venta="{{ $item->precio_venta }}">
+                                            Editar
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-danger btn-sm btn-eliminar" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#ModalDinamicoEliminar"
+                                                data-id="{{ $item->id }}"
+                                                data-nombre="{{ $item->nombre }}">
+                                                
+                                            Eliminar
+                                        </button>
 
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#EliminarProducto{{$item->id}}">
-                                    Eliminar
-                                </button>
-                                <x-modal-eliminaproducto :item="$item" />
+                                        
+                               
+                                
+
                                     </td>
 
                                 </tr>
                             @endforeach
+                            
                         </tbody>
                     </table>
                     {{ $productos->links() }}
+    </div>
 
            
 
@@ -106,7 +127,7 @@
                             <label for="newStock">Stock</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="precio" type="number" step="0.01" min="0.01" class="form-control" id="newPreciocompa" placeholder="Precio Compra" required>
+                            <input name="precio_compra" type="number" step="0.01" min="0.01" class="form-control" id="newPreciocompra" placeholder="Precio Compra" required>
                             <label for="newPrecioCompra">Precio Compra</label>
                         </div>
                         <div class="form-floating mb-3">
@@ -154,8 +175,141 @@
             </div>
             </div>
         </div>
+
+        <!-- Modal Dinamico -->
+        <div class="modal fade" id="ModalDinamico" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditar" action="{{ route('producto.update', '0') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="id" id="edit_id">
+                
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input name="codigo" type="text" class="form-control" id="edit_codigo" required>
+                        <label>Código</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="barra" type="text" class="form-control" id="edit_barra">
+                        <label>Barra</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="nombre" type="text" class="form-control" id="edit_nombre" required>
+                        <label>Nombre</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <select name="categoriaid" id="edit_categoria" class="form-select" required>
+                            <option value="" disabled>Seleccione una categoría</option>
+                            @foreach ($categorias as $categoria)
+                                <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                            @endforeach
+                        </select>
+                        <label for="edit_categoria">Categoría</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="stock_actual" type="number" class="form-control" id="edit_stock" required>
+                        <label>Stock</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="precio_compra" type="number" step="0.01" min="0.01" class="form-control" id="edit_compra" required>
+                        <label>Precio Compra</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="precio_venta" type="number" step="0.01" min="0.01" class="form-control" id="edit_venta" required>
+                        <label>Precio Venta</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEditar = document.getElementById('ModalDinamico');
+        
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            // El botón que activó el modal
+            const button = event.relatedTarget;
+            
+            // Extraer la información de los atributos data-*
+            const id = button.getAttribute('data-id');
+            const codigo = button.getAttribute('data-codigo');
+            const barra = button.getAttribute('data-barra');
+            const nombre = button.getAttribute('data-nombre');
+            const stock = button.getAttribute('data-stock');
+            const categoriaIdActual = button.getAttribute('data-categoria');
+            const compra = button.getAttribute('data-compra');
+            const venta = button.getAttribute('data-venta');
+            const selectCategoria = modalEditar.querySelector('#edit_categoria');
+            selectCategoria.value = categoriaIdActual;
+
+            // Llenar los campos del formulario
+            modalEditar.querySelector('#edit_id').value = id;
+            modalEditar.querySelector('#edit_codigo').value = codigo;
+            modalEditar.querySelector('#edit_barra').value = barra;
+            modalEditar.querySelector('#edit_nombre').value = nombre;
+            modalEditar.querySelector('#edit_stock').value = stock;
+            modalEditar.querySelector('#edit_compra').value = compra;
+            modalEditar.querySelector('#edit_venta').value = venta;
+        });
+    });
+</script>
+
+<!--modal de eliminar--->
+<div class="modal fade" id="ModalDinamicoEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eliminar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEliminar" action="{{ route('producto.destroy', '0') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="id" id="edit_id">
+            <div class="modal-body">
+                <p>¿Está seguro de que desea eliminar el producto "<span id="nombreProducto"></span>"?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEliminar = document.getElementById('ModalDinamicoEliminar');
+        
+        modalEliminar.addEventListener('show.bs.modal', function (event) {
+            // El botón que activó el modal
+            const button = event.relatedTarget;
+            
+            // Extraer la información de los atributos data-*
+            const id = button.getAttribute('data-id');
+            const nombre = button.getAttribute('data-nombre');
+            const formEliminar = modalEliminar.querySelector('#formEliminar');
+            formEliminar.action = '{{ route('producto.destroy', ':id') }}'.replace(':id', id);
+
+            
+            // Llenar los campos del formulario
+            modalEliminar.querySelector('#edit_id').value = id;
+            modalEliminar.querySelector('#nombreProducto').textContent = nombre;
+        });
+    });
+</script>
+
 
     
 

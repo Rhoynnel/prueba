@@ -59,7 +59,7 @@
                 @foreach ($compras as $item)
                     <tr>
                         <td>{{ $item->numeroCompra() }}</td>
-                        <td>{{ $item->proveedor->nombre }}</td>
+                        <td>{{ $item->proveedor?->nombre }}</td>
                         <td>{{ $item->fecha }}</td>
                         <td>{{ $item->numero_factura }}</td>
                         <td>

@@ -114,9 +114,10 @@
                         </td>
                         </tr>
                         @endforeach
+                          {{ $clientes->links() }}
             </tbody>
         </table>
-        {{ $clientes->links() }}
+      
         </div>
         <div class="modal fade" id="AgregaCliente" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
