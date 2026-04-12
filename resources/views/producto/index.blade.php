@@ -54,7 +54,7 @@
                                                 class="btn btn-primary btn-sm btn-editar" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#ModalDinamico"
-                                                data-id="{{ $item->id }}"
+                                                data-id_edit="{{ $item->id }}"
                                                 data-codigo="{{ $item->codigo }}"
                                                 data-barra="{{ $item->barra }}"
                                                 data-nombre="{{ $item->nombre }}"
@@ -68,7 +68,7 @@
                                                 class="btn btn-danger btn-sm btn-eliminar" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#ModalDinamicoEliminar"
-                                                data-id="{{ $item->id }}"
+                                                data-id_eliminar="{{ $item->id }}"
                                                 data-nombre="{{ $item->nombre }}">
                                                 
                                             Eliminar
@@ -187,7 +187,7 @@
             <form id="formEditar" action="{{ route('producto.update', '0') }}" method="POST">
                 @csrf
                 @method('PUT')
-                <input type="hidden" name="id" id="edit_id">
+                <input type="hidden" name="id_producto_edit" id="edit_producto_id">
                 
                 <div class="modal-body">
                     <div class="form-floating mb-3">
@@ -204,7 +204,7 @@
                     </div>
                     
                     <div class="form-floating mb-3">
-                        <select name="categoriaid" id="edit_categoria" class="form-select" required>
+                        <select name="categorias_id" id="edit_categoria" class="form-select" required>
                             <option value="" disabled>Seleccione una categoría</option>
                             @foreach ($categorias as $categoria)
                                 <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
@@ -238,11 +238,10 @@
         const modalEditar = document.getElementById('ModalDinamico');
         
         modalEditar.addEventListener('show.bs.modal', function (event) {
-            // El botón que activó el modal
             const button = event.relatedTarget;
             
-            // Extraer la información de los atributos data-*
-            const id = button.getAttribute('data-id');
+            // Extraer datos
+            const id_edit = button.getAttribute('data-id_edit');
             const codigo = button.getAttribute('data-codigo');
             const barra = button.getAttribute('data-barra');
             const nombre = button.getAttribute('data-nombre');
@@ -250,11 +249,16 @@
             const categoriaIdActual = button.getAttribute('data-categoria');
             const compra = button.getAttribute('data-compra');
             const venta = button.getAttribute('data-venta');
+
+            // --- ESTO ES LO NUEVO: Actualizar la URL del Formulario ---
+            const formEditar = modalEditar.querySelector('#formEditar');
+            formEditar.action = '{{ route('producto.update', ':id') }}'.replace(':id', id_edit);
+            // ---------------------------------------------------------
+
             const selectCategoria = modalEditar.querySelector('#edit_categoria');
             selectCategoria.value = categoriaIdActual;
 
-            // Llenar los campos del formulario
-            modalEditar.querySelector('#edit_id').value = id;
+            modalEditar.querySelector('#edit_producto_id').value = id_edit;
             modalEditar.querySelector('#edit_codigo').value = codigo;
             modalEditar.querySelector('#edit_barra').value = barra;
             modalEditar.querySelector('#edit_nombre').value = nombre;
@@ -276,7 +280,7 @@
             <form id="formEliminar" action="{{ route('producto.destroy', '0') }}" method="POST">
                 @csrf
                 @method('DELETE')
-                <input type="hidden" name="id" id="edit_id">
+                <input type="hidden" name="id_producto_eliminar" id="eliminar_id">
             <div class="modal-body">
                 <p>¿Está seguro de que desea eliminar el producto "<span id="nombreProducto"></span>"?</p>
             </div>
@@ -297,14 +301,14 @@
             const button = event.relatedTarget;
             
             // Extraer la información de los atributos data-*
-            const id = button.getAttribute('data-id');
+            const id_eliminar = button.getAttribute('data-id_eliminar');
             const nombre = button.getAttribute('data-nombre');
             const formEliminar = modalEliminar.querySelector('#formEliminar');
-            formEliminar.action = '{{ route('producto.destroy', ':id') }}'.replace(':id', id);
+            formEliminar.action = '{{ route('producto.destroy', ':id') }}'.replace(':id', id_eliminar);
 
             
             // Llenar los campos del formulario
-            modalEliminar.querySelector('#edit_id').value = id;
+            modalEliminar.querySelector('#eliminar_id').value = id_eliminar;
             modalEliminar.querySelector('#nombreProducto').textContent = nombre;
         });
     });
