@@ -11,10 +11,8 @@ use App\Imports\ProductsImport;
 class ProductoController extends Controller
 {
     public function productos(){
-        $productos = Producto::join('categorias', 'productos.categorias_id', '=', 'categorias.id')// Hacemos un join con la tabla categorías para poder ordenar por el nombre de la categoría
-        ->orderBy('categorias.name', 'asc') // Ordenamos por el nombre de la categoría
-        ->with('categoria') // Cargamos la relación para tener el objeto categoría disponible
-        ->paginate(5); // Paginación de 5 productos por página
+
+        $productos = Producto::with('categoria')->orderBy('categorias_id', 'desc')->paginate(5);
         $categorias= Categoria::all();
         
         //Producto:: with('categoria')->paginate(5);
@@ -76,51 +74,45 @@ class ProductoController extends Controller
 
     public function destroy($id)
     {
-        dd($id);
         $producto = Producto::findOrFail($id);
         $producto->delete();
         return redirect()->route('productos')->with('success', 'Producto eliminado exitosamente.');
     }
 
-    public function update(Request $request, $id)
-{
-    // 1. Validar los datos
-dd($id, $request->all());
-    $request->validate([
-        'id' => 'required|exists:productos,id',
-        'codigo' => 'required|unique:productos,codigo,' . $request->id,
-        'barra' => 'nullable|unique:productos,barra,' . $request->id,
-        'nombre' => 'required',
-        'stock_actual' => 'required|integer|min:0',
-        'categorias_id' => 'required|exists:categorias,id',
-        'precio_venta' => 'required|numeric',
-        'precio_compra' => 'required|numeric',
-    ]);
+    public function update(Request $request)
+    {
+        // 1. Validar los datos
+        $request->validate([
+            'id_producto_edit' => 'required|exists:productos,id',
+            'codigo' => 'required|unique:productos,codigo,' . $request->id_producto_edit,
+            'barra' => 'nullable|unique:productos,barra,' . $request->id_producto_edit,
+            'nombre' => 'required',
+            'stock_actual' => 'required|integer|min:0',
+            'categorias_id' => 'required|exists:categorias,id',
+            'precio_venta' => 'required|numeric',
+            'precio_compra' => 'required|numeric',
+        ]);
 
-    try {
-        // 2. Encontrar el producto
-        $producto = Producto::findOrFail($request->id);
+        
+            // 2. Encontrar el producto
+            $producto = Producto::findOrFail($request->id_producto_edit);
 
-        // 3. Asignar valores (Verifica que los nombres de la derecha coincidan con tu DB)
-        $producto->codigo = $request->codigo;
-        $producto->barra = $request->barra;
-        $producto->nombre = $request->nombre;
-        $producto->stock_actual = $request->stock_actual;
-        $producto->categorias_id = $request->categorias_id; // <-- REVISA ESTE NOMBRE
-        $producto->precio_venta = $request->precio_venta;
-        $producto->precio_compra = $request->precio_compra;
+            // 3. Asignar valores (Verifica que los nombres de la derecha coincidan con tu DB)
+            $producto->codigo = $request->codigo;
+            $producto->barra = $request->barra;
+            $producto->nombre = $request->nombre;
+            $producto->stock_actual = $request->stock_actual;
+            $producto->categorias_id = $request->categorias_id; // <-- REVISA ESTE NOMBRE
+            $producto->precio_venta = $request->precio_venta;
+            $producto->precio_compra = $request->precio_compra;
 
-        // 4. Guardar
-        if($producto->save()){
-            // Es mejor redireccionar que retornar la vista directamente para evitar re-envíos de formulario
-            return redirect()->route('producto')->with('success', 'Producto actualizado exitosamente.');
-        }
-
-    } catch (\Exception $e) {
-        // Esto te dirá exactamente qué falló (ej: columna no encontrada)
-        return redirect()->back()->with('error', 'Error técnico: ' . $e->getMessage());
+            // 4. Guardar
+            if($producto->save()){
+                // Es mejor redireccionar que retornar la vista directamente para evitar re-envíos de formulario
+                return redirect()->route('productos')->with('success', 'Producto actualizado exitosamente.');
+            }else{
+                return redirect()->back()->with('error', 'No se pudo guardar el producto.');
+            }
+    
     }
-
-    return redirect()->back()->with('error', 'No se pudo guardar el producto.');
-}
 }

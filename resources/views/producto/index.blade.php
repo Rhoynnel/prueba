@@ -41,35 +41,35 @@
             <tbody>
                             
                         
-                            @foreach ($productos as $item)
+                            @foreach ($productos as $producto)
                                 <tr>
-                                    <td >{{ $item->codigo }}</td>
-                                    <td >{{ $item->nombre }}</td>
-                                    <td >{{ $item->categoria->name }}</td>
-                                    <td >{{ $item->stock_actual }}</td>
-                                    <td >{{ $item->precio_venta }}</td>
-                                    <td >{{ $item->precio_compra }}</td>
+                                    <td >{{ $producto->codigo }}</td>
+                                    <td >{{ $producto->nombre }}</td>
+                                    <td >{{ $producto->categoria->name }}</td>
+                                    <td >{{ $producto->stock_actual }}</td>
+                                    <td >{{ $producto->precio_venta }}</td>
+                                    <td >{{ $producto->precio_compra }}</td>
                                     <td class="text-center">
                                         <button type="button" 
                                                 class="btn btn-primary btn-sm btn-editar" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#ModalDinamico"
-                                                data-id_edit="{{ $item->id }}"
-                                                data-codigo="{{ $item->codigo }}"
-                                                data-barra="{{ $item->barra }}"
-                                                data-nombre="{{ $item->nombre }}"
-                                                data-categoria="{{ $item->categorias_id }}"
-                                                data-stock="{{ $item->stock_actual }}"
-                                                data-compra="{{ $item->precio_compra }}"
-                                                data-venta="{{ $item->precio_venta }}">
+                                                data-editar_id="{{ $producto->id }}"
+                                                data-editar_codigo="{{ $producto->codigo }}"
+                                                data-editar_barra="{{ $producto->barra }}"
+                                                data-editar_nombre="{{ $producto->nombre }}"
+                                                data-editar_categoria="{{ $producto->categorias_id }}"
+                                                data-editar_stock="{{ $producto->stock_actual }}"
+                                                data-editar_compra="{{ $producto->precio_compra }}"
+                                                data-editar_venta="{{ $producto->precio_venta }}">
                                             Editar
                                         </button>
                                         <button type="button" 
                                                 class="btn btn-danger btn-sm btn-eliminar" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#ModalDinamicoEliminar"
-                                                data-id_eliminar="{{ $item->id }}"
-                                                data-nombre="{{ $item->nombre }}">
+                                                data-eliminar_id="{{ $producto->id }}"
+                                                data-eliminar_nombre="{{ $producto->nombre }}">
                                                 
                                             Eliminar
                                         </button>
@@ -241,30 +241,30 @@
             const button = event.relatedTarget;
             
             // Extraer datos
-            const id_edit = button.getAttribute('data-id_edit');
-            const codigo = button.getAttribute('data-codigo');
-            const barra = button.getAttribute('data-barra');
-            const nombre = button.getAttribute('data-nombre');
-            const stock = button.getAttribute('data-stock');
-            const categoriaIdActual = button.getAttribute('data-categoria');
-            const compra = button.getAttribute('data-compra');
-            const venta = button.getAttribute('data-venta');
+            const editar_id = button.getAttribute('data-editar_id');
+            const editar_codigo = button.getAttribute('data-editar_codigo');
+            const editar_barra = button.getAttribute('data-editar_barra');
+            const editar_nombre = button.getAttribute('data-editar_nombre');
+            const editar_stock = button.getAttribute('data-editar_stock');
+            const editar_categoriaIdActual = button.getAttribute('data-editar_categoria');
+            const editar_compra = button.getAttribute('data-editar_compra');
+            const editar_venta = button.getAttribute('data-editar_venta');
 
             // --- ESTO ES LO NUEVO: Actualizar la URL del Formulario ---
             const formEditar = modalEditar.querySelector('#formEditar');
-            formEditar.action = '{{ route('producto.update', ':id') }}'.replace(':id', id_edit);
+            formEditar.action = '{{ route('producto.update', ':id') }}'.replace(':id', editar_id);
             // ---------------------------------------------------------
 
             const selectCategoria = modalEditar.querySelector('#edit_categoria');
-            selectCategoria.value = categoriaIdActual;
+            selectCategoria.value = editar_categoriaIdActual;
 
-            modalEditar.querySelector('#edit_producto_id').value = id_edit;
-            modalEditar.querySelector('#edit_codigo').value = codigo;
-            modalEditar.querySelector('#edit_barra').value = barra;
-            modalEditar.querySelector('#edit_nombre').value = nombre;
-            modalEditar.querySelector('#edit_stock').value = stock;
-            modalEditar.querySelector('#edit_compra').value = compra;
-            modalEditar.querySelector('#edit_venta').value = venta;
+            modalEditar.querySelector('#edit_producto_id').value = editar_id;
+            modalEditar.querySelector('#edit_codigo').value = editar_codigo;
+            modalEditar.querySelector('#edit_barra').value = editar_barra;
+            modalEditar.querySelector('#edit_nombre').value = editar_nombre;
+            modalEditar.querySelector('#edit_stock').value = editar_stock;
+            modalEditar.querySelector('#edit_compra').value = editar_compra;
+            modalEditar.querySelector('#edit_venta').value = editar_venta;
         });
     });
 </script>
@@ -301,15 +301,15 @@
             const button = event.relatedTarget;
             
             // Extraer la información de los atributos data-*
-            const id_eliminar = button.getAttribute('data-id_eliminar');
-            const nombre = button.getAttribute('data-nombre');
+            const eliminar_id = button.getAttribute('data-eliminar_id');
+            const eliminar_nombre = button.getAttribute('data-eliminar_nombre');
             const formEliminar = modalEliminar.querySelector('#formEliminar');
-            formEliminar.action = '{{ route('producto.destroy', ':id') }}'.replace(':id', id_eliminar);
+            formEliminar.action = '{{ route('producto.destroy', ':id') }}'.replace(':id', eliminar_id);
 
             
             // Llenar los campos del formulario
-            modalEliminar.querySelector('#eliminar_id').value = id_eliminar;
-            modalEliminar.querySelector('#nombreProducto').textContent = nombre;
+            modalEliminar.querySelector('#eliminar_id').value = eliminar_id;
+            modalEliminar.querySelector('#nombreProducto').textContent = eliminar_nombre;
         });
     });
 </script>

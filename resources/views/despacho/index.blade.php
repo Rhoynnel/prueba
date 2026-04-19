@@ -65,6 +65,7 @@
                         </thead>
                         <tbody>
                             @foreach ($despachos as $item)
+
                                 <tr >
                                     <td >{{ $item->cliente->cedula }}</td>
                                     <td >{{ $item->cliente->nombreCompleto }}</td>

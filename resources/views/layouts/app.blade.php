@@ -22,7 +22,7 @@
             <!-- Page Content -->
             <main>
                 <div class="container">
-                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                <div class="h-100 p-2 bg-body-tertiary border rounded-3">
                 {{ $slot }}
                 </div>
                 </div>

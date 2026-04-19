@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class DespachoController extends Controller
 {
     public function despachos(){
-        $despachos = Despacho::with('cliente', 'tasa')->withsum('detalleDespacho as total_dolares','precio_dolar')->withsum('detalleDespacho as total_bs','precio_bs')->orderBy('id', 'desc')
+        $despachos = Despacho::with('cliente', 'tasa','detalleDespacho')->orderBy('id', 'desc')
         ->paginate(5);
         return view('despacho.index',compact('despachos'));
     }
@@ -109,7 +109,7 @@ class DespachoController extends Controller
 
     public function generarPdf($id)
     {
-        $despacho = Despacho::with('cliente', 'tasa')->withsum('detalleDespacho as total_dolares','precio_dolar')->withsum('detalleDespacho as total_bs','precio_bs')->find($id);
+        $despacho = Despacho::with('cliente', 'tasa','detalleDespacho')->find($id);
         $detalleDespacho = DetalleDespacho::where('despachos_id', $id)->with('producto')->get();
         $pdf = Pdf::loadView('pdf.despacho', compact('despacho', 'detalleDespacho'));
         return $pdf->download('despacho-'.$id.'.pdf');

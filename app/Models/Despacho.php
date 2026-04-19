@@ -33,4 +33,14 @@ class Despacho extends Model
     {
         return 'D-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
     }
+
+    public function getTotalDolaresAttribute()
+    {
+        return $this->detalleDespacho->sum(fn($d) => $d->precio_dolar * $d->cantidad);
+    }
+
+    public function getTotalBsAttribute()
+    {
+        return $this->total_dolares * ($this->tasa->tasa ?? 0);
+    }
 }

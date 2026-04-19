@@ -36,7 +36,7 @@
                         <td>{{ $proveedor->direccion }}</td>
                         <td >
                             
-                                <a href="#" class="btn btn-sm btn-outline-secondary">Ver Compras</a>
+                                <a href="{{ route('proveedor.compras', $proveedor->proveedores_id) }}" class="btn btn-sm btn-outline-secondary">Ver Compras</a>
                                 
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#EditarProveedor{{$proveedor->id}}">
                                     Editar

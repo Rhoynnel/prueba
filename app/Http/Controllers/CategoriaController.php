@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class CategoriaController extends Controller
 {
     public function categorias(){
-        $categorias = Categoria::all();
+        $categorias = Categoria::paginate(5);
         return view('categoria.index',compact('categorias'));
     }
     public function create(){
@@ -28,7 +28,7 @@ class CategoriaController extends Controller
             return response()->json($categoria);
         }
 
-        return redirect()->route('producto.crear')->with('success', 'Categoria creada exitosamente.');
+        return redirect()->route('categorias')->with('success', 'Categoria creada exitosamente.');
     }
     public function destroy($id)
     {

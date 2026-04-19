@@ -88,7 +88,7 @@ class ProveedorController extends Controller
         $proveedor->direccion = $request->input('direccion');
         $proveedor->save();
 
-        $proveedores = Proveedor::find($proveedor->id)->get();
+        $proveedores = Proveedor::find($proveedor->id)->first();
 
         return view('compra.create', compact('proveedores'))->with('success', 'Proveedor registrado exitosamente.');
     }
@@ -129,6 +129,17 @@ class ProveedorController extends Controller
 
     // En caso de falla inesperada al guardar
     return back()->with('error', 'No se pudieron guardar los cambios.');
+}
+
+public function compras(Request $request)
+{
+    $request->validate([
+        'proveedores_id' => 'required|integer|exists:proveedores,id',
+    ]);
+    $compras = Compra::where('proveedores_id', $request->proveedores_id)->with('proveedor')->orderBy('id', 'desc')->paginate(5);
+     
+
+    return redirect()->route('proveedor.compras', compact('compras'));
 }
 
 

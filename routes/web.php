@@ -8,6 +8,7 @@ use App\Http\Controllers\CompraController;
 use App\Http\Controllers\DespachoController;
 use App\Http\Controllers\TasaController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\DetalleDespachoController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,7 @@ Route::get('/producto.crear', [ProductoController::class, 'create'])->middleware
 Route::get('/categorias', [CategoriaController::class, 'categorias'])->middleware(['auth', 'verified'])->name('categorias');
 Route::post('/categorias', [CategoriaController::class, 'store'])->middleware(['auth', 'verified'])->name('categoria.store');
 Route::get('/categoria.crear', [CategoriaController::class, 'create'])->middleware(['auth', 'verified'])->name('categoria.crear');
+Route::delete('/categoria{id}',[CategoriaController::class, 'destroy'])->middleware(['auth', 'verified'])->name('categoria.destroy');
 
 route::get('/despachos', [DespachoController::class, 'despachos'])->middleware(['auth', 'verified'])->name('despachos');
 route::post('/despachos', [DespachoController::class, 'store'])->middleware(['auth', 'verified'])->name('despacho.store');
@@ -42,6 +44,10 @@ route::post('/despacho.agregarProducto', [DespachoController::class, 'agregarPro
 route::delete('/despacho.detalle/{id}', [DespachoController::class, 'destroyDetalle'])->middleware(['auth', 'verified'])->name('despacho.destroyDetalle');
 route::put('/despacho.cambiarStatus/{id}', [DespachoController::class, 'cambiarStatus'])->middleware(['auth', 'verified'])->name('despacho.cambiarStatus');
 route::get('/despacho/{id}/pdf', [DespachoController::class, 'generarPdf'])->middleware(['auth', 'verified'])->name('despacho.pdf');
+
+route::delete('/detalleDespacho/{id}', [DetalleDespachoController::class, 'destroyDetalle'])->middleware(['auth', 'verified'])->name('detalleDespacho.destroyDetalle');
+route::put('/detalleDespacho/{id}', [DetalleDespachoController::class, 'updateDetalle'])->middleware(['auth', 'verified'])->name('detalleDespacho.updateDetalle');
+
 
 route::get('/compras', [CompraController::class, 'compras'])->middleware(['auth', 'verified'])->name('compras');
 route::post('/compra.crear', [CompraController::class, 'create'])->middleware(['auth', 'verified'])->name('compra.crear');
@@ -73,6 +79,7 @@ route::get('/proveedores', [ProveedorController::class, 'proveedores'])->middlew
 route::post('/proveedores', [ProveedorController::class, 'store'])->middleware(['auth', 'verified'])->name('proveedor.store');
 Route::put('/proveedor{id}', [ProveedorController::class, 'update'])->middleware(['auth', 'verified'])->name('proveedor.update');
 Route::delete('/proveedor{id}',[ProveedorController::class, 'destroy'])->middleware(['auth', 'verified'])->name('proveedor.destroy');
+route::get('/proveedor.compras', [ProveedorController::class, 'compras'])->middleware(['auth', 'verified'])->name('proveedor.compras');
 
 
 route::get('/proveedor.crear', [ProveedorController::class, 'create'])->middleware(['auth', 'verified'])->name('proveedor.crear');
