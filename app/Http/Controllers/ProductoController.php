@@ -29,6 +29,8 @@ class ProductoController extends Controller
         'nombre'      => 'required',
         'stock_actual' => 'required|integer|min:0',
         'categoriaid' => 'required|exists:categorias,id',
+        'precio_venta' => 'required|numeric',
+        'precio_compra' => 'required|numeric',
     ]);
 
         $producto= new Producto();
@@ -37,10 +39,12 @@ class ProductoController extends Controller
         $producto->nombre=$request->input('nombre');
         $producto->stock_actual=$request->input('stock_actual');
         $producto->categorias_id=$request->input('categoriaid');
+        $producto->precio_venta=$request->input('precio_venta');
+        $producto->precio_compra=$request->input('precio_compra');
         $producto->save();
 
 
-        return redirect()->route('producto')->with('success', 'Producto creado exitosamente.');
+        return redirect()->route('productos')->with('success', 'Producto creado exitosamente.');
     }
 
     /**

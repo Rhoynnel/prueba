@@ -9,6 +9,7 @@ use App\Http\Controllers\DespachoController;
 use App\Http\Controllers\TasaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\DetalleDespachoController;
+use App\Http\Controllers\ConsultaController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -84,6 +85,12 @@ route::get('/proveedor.compras', [ProveedorController::class, 'compras'])->middl
 
 route::get('/proveedor.crear', [ProveedorController::class, 'create'])->middleware(['auth', 'verified'])->name('proveedor.crear');
 route::get('/proveedor.buscar', [ProveedorController::class, 'buscar'])->middleware(['auth', 'verified'])->name('proveedor.buscar');
+
+route::get('/consulta', [ConsultaController::class, 'consulta'])->middleware(['auth', 'verified'])->name('consulta');
+route::get('/consulta.cliente', [ConsultaController::class, 'cliente'])->middleware(['auth', 'verified'])->name('consulta.cliente');
+route::get('/consulta.producto', [ConsultaController::class, 'producto'])->middleware(['auth', 'verified'])->name('consulta.producto');
+route::get('/consulta.proveedor', [ConsultaController::class, 'proveedor'])->middleware(['auth', 'verified'])->name('consulta.proveedor');
+route::get('/consulta.despacho', [ConsultaController::class, 'despacho'])->middleware(['auth', 'verified'])->name('consulta.despacho');
 
 // user management CRUD
 Route::get('/usuarios', [\App\Http\Controllers\UserController::class, 'index'])
