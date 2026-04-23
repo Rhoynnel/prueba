@@ -5,11 +5,37 @@
         </h2>
     </x-slot>
 
-    <div>
-        <div>
-            <div >
-                <div >
-                    {{ __("Estas en el Inicio!") }}
+    <div class="container">
+        <div class="row align-items-md-stretch">
+            <div class="col-md-3">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <div>
+                        Datos Estadisticos
+                    </div>
+             </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <div>
+                        Datos Estadisticos
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <div>
+                        Datos Estadisticos
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                    <div>
+                        Datos Estadisticos
+                    </div>
                 </div>
             </div>
         </div>

@@ -28,8 +28,12 @@ class ConsultaController extends Controller
         return view('consulta.producto', compact('producto'));
     }
 
-    public function venta(request $request){
-        $despacho = Despacho::where('codigo', $request->codigo)->first();
-        return view('consulta.venta', compact('despacho'));
+    public function despacho(request $request){
+        $request->validate([
+            'desde' => 'required',
+            'hasta' => 'required',
+        ]);
+        $despachos = Despacho::whereBetween('created_at', [$request->desde, $request->hasta])->get();
+        return view('consulta.despacho', compact('despachos'));
     }
 }

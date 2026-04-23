@@ -131,15 +131,15 @@ class ProveedorController extends Controller
     return back()->with('error', 'No se pudieron guardar los cambios.');
 }
 
-public function compras(Request $request)
+public function compras(request $request)
 {
     $request->validate([
-        'proveedores_id' => 'required|integer|exists:proveedores,id',
+        'id' => 'required|integer|exists:proveedores,id',
     ]);
-    $compras = Compra::where('proveedores_id', $request->proveedores_id)->with('proveedor')->orderBy('id', 'desc')->paginate(5);
+    $compras = Compra::where('proveedores_id', $request->id)->with('proveedor')->orderBy('id', 'desc')->paginate(5);
      
 
-    return redirect()->route('proveedor.compras', compact('compras'));
+    return view('proveedor.compras', compact('compras'));
 }
 
 
