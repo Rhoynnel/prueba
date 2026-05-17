@@ -4,10 +4,12 @@ namespace App\Imports;
 
 use App\Models\Categoria;
 use App\Models\Producto;
-use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Support\Collection;
 
-class ProductsImport implements ToModel, WithHeadingRow
+class ProductsImport implements ToCollection, WithHeadingRow, WithChunkReading
 {
     /**
      * Map each row of the spreadsheet into a Producto model (creating or updating as needed).
@@ -15,29 +17,49 @@ class ProductsImport implements ToModel, WithHeadingRow
      * The import expects the first row to contain headers such as:
      * codigo,nombre,categoria,barra,stock_actual
      *
-     * @param array $row
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @param Collection $rows
      */
-    public function model(array $row)
+
+    public function collection(Collection $rows)
     {
-        // skip rows without a code or name or category
-        if (empty($row['codigo']) || empty($row['nombre']) || empty($row['categoria'])) {
-            return null;
+        foreach ($rows as $row) {
+            $rowData = $row->toArray();
+        
+        // Extraemos los valores (limpiando espacios si son cadenas)
+        $codigo   = isset($rowData['codigo']) ? trim($rowData['codigo']) : '';
+        $nombre   = isset($rowData['nombre']) ? trim($rowData['nombre']) : '';
+        $catName  = isset($rowData['categoria']) ? trim($rowData['categoria']) : '';
+        
+        $stock    = $rowData['stock_actual'] ?? null;
+        $precio_venta = $rowData['precio_venta'] ?? null;
+        $precio_compra = $rowData['precio_compra'] ?? null;
+
+        // CORRECCIÓN: Validamos que no sean nulos o cadenas vacías. 
+        // Permitimos el número 0 como precio o stock válido.
+        if ($codigo === '' || $nombre === '' || $catName === '' || $stock === null || $precio_venta === null || $precio_compra === null) {
+            continue; 
         }
 
-        // ensure category exists (firstOrCreate keeps duplicates from being added)
-        $categoryName = trim($row['categoria']);
-        $categoria = Categoria::firstOrCreate(['name' => $categoryName]);
+        // Buscar o crear la categoría
+        $categoria = Categoria::firstOrCreate(['name' => $catName]);
 
-        // update existing product by codigo or create new
-        return Producto::updateOrCreate(
-            ['codigo' => $row['codigo']],
+        // Guardar o actualizar producto
+        Producto::updateOrCreate(
+            ['codigo' => $codigo],
             [
-                'barra'         => $row['barra'] ?? null,
-                'nombre'        => $row['nombre'],
-                'stock_actual'  => isset($row['stock_actual']) ? intval($row['stock_actual']) : 0,
+                'barra'         => $rowData['barra'] ?? null,
+                'nombre'        => $nombre,
+                'stock_actual'  => intval($stock),
                 'categorias_id' => $categoria->id,
+                'precio_venta'  => floatval($precio_venta),
+                'precio_compra' => floatval($precio_compra),
             ]
         );
+        }   
     }
+    
+    public function chunkSize(): int{
+        return 4000;
+    }
+    
 }

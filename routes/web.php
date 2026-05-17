@@ -10,6 +10,7 @@ use App\Http\Controllers\TasaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\DetalleDespachoController;
 use App\Http\Controllers\ConsultaController;
+use App\Models\Producto;
 
 
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,17 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/dashboard', function () {
+    // 1. Calculamos los datos directo de la base de datos
+    $totalProductos = Producto::count();
+    $totalInventario = Producto::sum('stock_actual');
+
+    // 2. Pasamos las variables a la vista 'dashboard'
+    return view('dashboard', compact('totalProductos', 'totalInventario'));
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+/*
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

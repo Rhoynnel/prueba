@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Proveedor;
 use App\Models\Producto;
+use App\Models\Categoria;
 use App\Models\Despacho;
 use Illuminate\Http\Request;
 
@@ -23,9 +24,17 @@ class ConsultaController extends Controller
         return view('consulta.proveedor', compact('proveedor'));
     }
 
-    public function producto(request $request){
-        $producto = Producto::where('codigo', $request->codigo)->first();
-        return view('consulta.producto', compact('producto'));
+    public function producto(Request $request) {
+    $productos = Producto::where('codigo', $request->codigo)
+        ->orWhere('barra', $request->codigo)
+        ->orWhere('nombre', 'LIKE', "%{$request->codigo}%") // Te agregué el LIKE para que busque por nombre parcial
+        ->with('categoria')
+        ->paginate(5)
+        ->withQueryString(); // <-- CAMBIADO DE first() A get()
+
+    $categorias = Categoria::all();
+    
+    return view('producto.index', compact('productos', 'categorias'));
     }
 
     public function despacho(request $request){

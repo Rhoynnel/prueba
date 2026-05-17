@@ -59,7 +59,7 @@ class ClienteController extends Controller
         $cliente->save();
 
                
-        if($request->input('origen') == 'despacho'){
+        if($request->input('origen') == 'Despacho'){
             $cliente= Cliente::where('cedula', $request->input('cedula'))->first();
             $tasaVigente= Tasa::orderBy('fecha', 'desc')->first();
             return view('despacho.create',compact('cliente', 'tasaVigente'))->with('success', 'Cliente creado exitosamente.');
