@@ -39,11 +39,22 @@
         </div>
 
         <div class="row mt-4">
+            <!-- Gráfico 1: Volúmenes -->
             <div class="col-md-6">
                 <div class="p-4 bg-body-tertiary border border-secondary rounded-3 text-white">
                     <h5 class="mb-3 font-weight-bold text-muted small text-uppercase">Volúmenes de Inventario</h5>
                     <div class="d-flex justify-content-center" style="max-height: 280px;">
                         <canvas id="graficoInventario"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico 2: Valor en Dólares (Cambiado el ID a graficoDolares) -->
+            <div class="col-md-6">
+                <div class="p-4 bg-body-tertiary border border-secondary rounded-3 text-white">
+                    <h5 class="mb-3 font-weight-bold text-muted small text-uppercase">Total de Dólares en Stock</h5>
+                    <div class="d-flex justify-content-center" style="max-height: 280px;">
+                        <canvas id="graficoDolares"></canvas>
                     </div>
                 </div>
             </div>
@@ -55,20 +66,18 @@
         // Traemos las variables desde el controlador de Laravel de forma segura
         const totalProductos = {{ $totalProductos ?? 0 }};
         const totalInventario = {{ $totalInventario ?? 0 }};
+        const totalDolares = {{ $totalDolares ?? 0 }}; // Asegúrate de enviar esta variable desde tu Controlador
 
-        const ctx = document.getElementById('graficoInventario').getContext('2d');
-        
-        new Chart(ctx, {
+        // --- Configuración Gráfico 1: Volúmenes ---
+        const ctxInventario = document.getElementById('graficoInventario').getContext('2d');
+        new Chart(ctxInventario, {
             type: 'doughnut',
             data: {
                 labels: ['Productos Únicos', 'Stock Total'],
                 datasets: [{
                     data: [totalProductos, totalInventario],
-                    backgroundColor: [
-                        '#36A2EB', // Azul eléctrico
-                        '#2ECC71'  // Verde esmeralda para el stock
-                    ],
-                    borderWidth: 0, // Sin bordes blancos para mantener la estética oscura
+                    backgroundColor: ['#36A2EB', '#2ECC71'],
+                    borderWidth: 0,
                     hoverOffset: 4
                 }]
             },
@@ -78,12 +87,49 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: {
-                            color: '#adb5bd', // Texto gris claro (Bootstrap text-muted)
-                            font: {
-                                size: 12
-                            },
-                            padding: 15
+                        labels: { color: '#adb5bd', font: { size: 12 }, padding: 15 }
+                    }
+                }
+            }
+        });
+
+        // --- Configuración Gráfico 2: Total Dólares ---
+        const ctxDolares = document.getElementById('graficoDolares').getContext('2d');
+        new Chart(ctxDolares, {
+            type: 'bar', // Tipo barra para ver el volumen financiero claramente
+            data: {
+                labels: ['Valor del Inventario ($)'],
+                datasets: [{
+                    label: 'Total USD',
+                    data: [totalDolares],
+                    backgroundColor: ['#F1C40F'], // Amarillo/Dorado para representar dinero
+                    borderWidth: 0,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#adb5bd' }
+                    },
+                    y: {
+                        grid: { color: '#343a40' }, // Línea sutil en modo oscuro
+                        ticks: { 
+                            color: '#adb5bd',
+                            callback: function(value) { return '$' + value.toLocaleString(); } // Agrega el signo $ al eje Y
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }, // Ocultamos la leyenda ya que el título de la tarjeta lo explica
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.dataset.label + ': $' + context.raw.toLocaleString();
+                            }
                         }
                     }
                 }

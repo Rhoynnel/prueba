@@ -24,9 +24,20 @@ Route::get('/dashboard', function () {
     $totalProductos = Producto::count();
     $totalInventario = Producto::sum('stock_actual');
 
+    // 3. Calculamos el valor total del inventario en dólares
+    // Multiplica el stock actual por el precio de cada registro y los suma todos
+    $totalDolares = Producto::selectRaw('SUM(stock_actual * precio_venta) as total')->value('total') ?? 0;
+
     // 2. Pasamos las variables a la vista 'dashboard'
-    return view('dashboard', compact('totalProductos', 'totalInventario'));
+    return view('dashboard', compact('totalProductos', 'totalInventario', 'totalDolares'));
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/clear-cache', function () {
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    return "¡Caché de rutas, vistas y app optimizada con éxito!";
+});
 
 
 /*
