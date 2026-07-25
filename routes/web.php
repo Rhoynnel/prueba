@@ -31,14 +31,14 @@ Route::get('/dashboard', function () {
     // 2. Pasamos las variables a la vista 'dashboard'
     return view('dashboard', compact('totalProductos', 'totalInventario', 'totalDolares'));
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+/*
 Route::get('/clear-cache', function () {
     Artisan::call('route:clear');
     Artisan::call('view:clear');
     Artisan::call('cache:clear');
     return "¡Caché de rutas, vistas y app optimizada con éxito!";
 });
-
+*/
 
 /*
 Route::get('/dashboard', function () {
